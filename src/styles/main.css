@@ -2,7 +2,55 @@
   display: flex;
   flex-direction: column;
   text-align: center;
-  color: red;
+}
+.App .Board {
+  display: flex;
+  margin: 5px;
+  justify-content: center;
+  flex-direction: column;
+}
+.App .Board .row {
+  display: flex;
+  justify-content: center;
+}
+
+.Cell {
+  align-self: center;
+  height: 12px;
+  width: 12px;
+  padding: 5px;
+  margin: 1px;
+  font-size: 8px;
+  border-radius: 12px;
+  background-color: #65e071;
+}
+
+.Divider {
+  background-color: green;
+}
+
+.vertical {
+  height: 12px;
+  width: 1px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+.vertical_em {
+  height: 24px;
+  width: 1px;
+}
+
+.horizontal {
+  height: 1px;
+  width: 12px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+
+.horizontal_em {
+  height: 1px;
+  width: 24px;
 }
 
 /*# sourceMappingURL=main.css.map */
