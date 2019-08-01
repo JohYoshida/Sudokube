@@ -10,15 +10,11 @@ class Board extends Component {
 
   makeBoard = () => {
     const Board = [];
-    let Third = this.makeThird(1);
-    let div = this.makeHorizontalDivider("em");
-    Board.push(Third);
-    Board.push(div);
-    Third = this.makeThird(2);
-    Board.push(Third);
-    Board.push(div);
-    Third = this.makeThird(3);
-    Board.push(Third);
+    Board.push(this.makeThird(1));
+    Board.push(this.makeHorizontalDivider("top_em", "em"));
+    Board.push(this.makeThird(2));
+    Board.push(this.makeHorizontalDivider("bottom_em", "em"));
+    Board.push(this.makeThird(3));
     return Board;
   }
 
@@ -26,25 +22,27 @@ class Board extends Component {
     const Third = [];
     let row = [];
     let count = 3 * val;
-    for (var i = count - 3; i <= count; i++) {
+    for (var i = count - 2; i <= count; i++) {
       for (var j = 1; j <= 9; j++) {
         row.push(<Cell key={j} i={i} j={j}/>);
+        // add vertical dividers
         if (j === 3 || j === 6) {
-          row.push(<Divider key={j} type="vertical_em"/>);
+          row.push(<Divider key={`${j}_divider`} type="vertical_em"/>);
         } else if (j !== 9) {
-          row.push(<Divider key={j} type="vertical"/>);
+          row.push(<Divider key={`${j}_divider`} type="vertical"/>);
         }
       }
+      Third.push(<div className="row" key={i}>{ row }</div>);
       row = [];
-      Third.push(<div className="row" key={`${i}-row`}>{ row }</div>);
-      if (i === 0 || i === 1) {
-        Third.push(this.makeHorizontalDivider());
+      // add horizontal divider
+      if (i % 3 !== 0) {
+        Third.push(this.makeHorizontalDivider(`${i}_row`));
       }
     }
     return Third;
   }
 
-  makeHorizontalDivider = (modifier) => {
+  makeHorizontalDivider = (key, modifier) => {
     let row = [];
     let type = "horizontal";
     if (modifier === "em") {
@@ -53,7 +51,7 @@ class Board extends Component {
     for (var i = 0; i < 9; i++) {
       row.push(<Divider key={i} type={type}/>);
     }
-    return (<div className="row" key="a">{ row }</div>);
+    return (<div className="row" key={key}>{ row }</div>);
   }
 }
 
