@@ -1,0 +1,12 @@
+@import "Colors";
+
+.Cell {
+  align-self: center;
+  height: 12px;
+  width: 12px;
+  padding: 5px;
+  margin: 1px;
+  font-size: 8px;
+  border-radius: 12px;
+  background-color: $green;
+}

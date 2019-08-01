@@ -1,0 +1,25 @@
+@import "Colors";
+
+.Divider {
+  background-color: $green;
+}
+.vertical {
+  height: 12px;
+  width: 1px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.vertical_em {
+  height: 24px;
+  width: 1px;
+}
+.horizontal {
+  height: 1px;
+  width: 12px;
+  margin-left: 6px;
+  margin-right: 6px;
+}
+.horizontal_em {
+  height: 1px;
+  width: 24px;
+}
