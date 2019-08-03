@@ -2,19 +2,21 @@
 @import "Divider";
 @import "Colors";
 
-.App {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
+body {
   background-color: $darkGrey;
-  .Board {
+  .App {
     display: flex;
-    margin: 5px;
-    justify-content: center;
     flex-direction: column;
-    .row {
+    text-align: center;
+    .Board {
       display: flex;
+      margin: 5px;
       justify-content: center;
+      flex-direction: column;
+      .row {
+        display: flex;
+        justify-content: center;
+      }
     }
   }
 }

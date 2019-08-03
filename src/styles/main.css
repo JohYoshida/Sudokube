@@ -37,19 +37,21 @@
   width: 24px;
 }
 
-.App {
+body {
+  background-color: #212121;
+}
+body .App {
   display: flex;
   flex-direction: column;
   text-align: center;
-  background-color: #212121;
 }
-.App .Board {
+body .App .Board {
   display: flex;
   margin: 5px;
   justify-content: center;
   flex-direction: column;
 }
-.App .Board .row {
+body .App .Board .row {
   display: flex;
   justify-content: center;
 }
