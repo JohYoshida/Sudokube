@@ -2,6 +2,7 @@ import React, {
   Component
 } from 'react';
 import Cell from "./Cell";
+import ModeSelector from "./ModeSelector";
 
 class NumSelector extends Component {
 
@@ -17,6 +18,15 @@ class NumSelector extends Component {
         />
       );
     }
+    // Add mode selector
+    numbers.push(
+      <ModeSelector
+        key="mode"
+        value="e"
+        onClick={this.props.changeMode}
+        selectedValue={this.props.mode}
+      />
+    );
     return (
       <div className="NumSelector">
         {numbers}

@@ -26,13 +26,19 @@ class Board extends Component {
     let count = 3 * val;
     for (var i = count - 2; i <= count; i++) {
       for (var j = 1; j <= 9; j++) {
+        let value = null;
+        let given = false;
+        if (this.props.grid[i - 1][j - 1] !== null) {
+          value = this.props.grid[i - 1][j - 1].value
+          given = this.props.grid[i - 1][j - 1].given
+        }
         row.push(
           <Cell
             key={j}
             row={i}
             col={j}
-            value={this.props.grid[i-1][j-1]}
-            given={this.props.givenValues[i-1][j-1] ? true : false}
+            value={value}
+            given={given}
             selectedValue={this.props.selectedValue}
             onClick={this.props.onClickCell}
           />);

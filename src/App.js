@@ -11,8 +11,8 @@ class App extends Component {
     super(props);
     this.state = {
       grid: emptyGrid(),
-      givenValues: emptyGrid(),
-      selectedValue: null
+      selectedValue: null,
+      mode: "pen"
     };
   }
 
@@ -21,13 +21,14 @@ class App extends Component {
       <div className="App">
         <Board
           grid={this.state.grid}
-          givenValues={this.state.givenValues}
           selectedValue={this.state.selectedValue}
           onClickCell={this.onClickCell.bind(this)}
         />
         <NumSelector
           selectedValue={this.state.selectedValue}
+          mode={this.state.mode}
           onClickCell={this.onClickCell.bind(this)}
+          changeMode={this.changeMode.bind(this)}
         />
         <Controls
           startGame={this.startGame.bind(this)}
@@ -60,8 +61,7 @@ class App extends Component {
     }
     console.log(printGrid(grid, "-"))
     this.setState({
-      grid,
-      givenValues: [...grid]
+      grid
     });
   }
 
@@ -106,15 +106,67 @@ class App extends Component {
     }
   }
 
+  changeMode() {
+    let mode = this.state.mode;
+    if (mode === "pen") {
+      mode = "pencil";
+    } else if (mode === "pencil") {
+      mode = "pen";
+    }
+    this.setState({
+      mode
+    });
+  }
+
   updateCell(row, col, value) {
     let grid = this.state.grid;
-    let givenValues = this.state.givenValues;
+    let mode = this.state.mode;
     let cell = grid[row - 1][col - 1];
-    if (givenValues[row][col] === null) {
-      if (cell === value) {
-        grid[row - 1][col - 1] = null;
-      } else {
-        grid[row - 1][col - 1] = value;
+
+    if (cell === null) {
+      if (mode === "pen") {
+        grid[row - 1][col - 1] = {
+          value,
+          given: false
+        };
+      } else if (mode === "pencil") {
+        grid[row - 1][col - 1] = {
+          value: [value],
+          given: false
+        };
+      }
+    } else {
+      if (!cell.given) {
+        if (mode === "pen") {
+          if (typeof cell.value === "number") {
+            if (cell.value === value) {
+              grid[row - 1][col - 1] = null;
+            } else {
+              grid[row - 1][col - 1] = {
+                value,
+                given: false
+              };
+            }
+          } else {
+            grid[row - 1][col - 1] = {
+              value,
+              given: false
+            }
+          }
+        } else if (mode === "pencil") {
+          if (typeof cell.value !== "number") {
+            if (cell.value.includes(value)) {
+              console.log("includes");
+              grid[row - 1][col - 1].value = cell.value.filter(e => {
+                return e !== value
+              });
+            } else {
+              grid[row - 1][col - 1].value.push(value);
+              grid[row - 1][col - 1].value.sort();
+            }
+          }
+        }
+
       }
     }
     this.setState({
@@ -143,7 +195,15 @@ function printGrid(grid, spacer) {
           string += " ";
         }
       } else {
-        string += grid[row][col];
+        if (typeof grid[row][col].value === "number") {
+          string += grid[row][col].value;
+        } else {
+          if (spacer) {
+            string += spacer;
+          } else {
+            string += " ";
+          }
+        }
       }
     }
   }
@@ -157,7 +217,7 @@ function printGrid(grid, spacer) {
 function checkGrid(grid) {
   for (var row = 0; row < 9; row++) {
     for (var col = 0; col < 9; col++) {
-      if (grid[row][col] == null) return false;
+      if (grid[row][col] === null) return false;
     }
   }
   return true;
@@ -174,12 +234,14 @@ function fillGrid(grid) {
   for (var i = 0; i < 81; i++) {
     let row = Math.floor(i / 9);
     let col = i % 9;
-    if (grid[row][col] == null) {
+    if (grid[row][col] === null) {
       shuffle(numberList)
       for (var index in numberList) {
         let value = numberList[index];
         // Check that this value hasn't been used in this row
-        if (!grid[row].includes(value)) {
+        let thisRow = rowValues(grid, row);
+        if (!thisRow.includes(value)) {
+          // if (!grid[row].includes(value)) {
           // Check that this value hasn't been used in this column
           let thisColumn = column(grid, col);
           if (!thisColumn.includes(value)) {
@@ -187,7 +249,10 @@ function fillGrid(grid) {
             let thisSquare = square(grid, row, col);
             // Check that this value hasn't been used in this square
             if (!thisSquare.includes(value)) {
-              grid[row][col] = value;
+              grid[row][col] = {
+                value,
+                given: true
+              };
               if (checkGrid(grid)) return true
               else if (fillGrid(grid)) return true;
             }
@@ -215,7 +280,8 @@ function solvable(grid) {
     if (grid[row][col] == null) {
       for (var value = 1; value < 10; value++) {
         // Check that this value hasn't been used in this row
-        if (!grid[row].includes(value)) {
+        let thisRow = rowValues(grid, row);
+        if (!thisRow.includes(value)) {
           // Check that this value hasn't been used in this column
           let thisColumn = column(grid, col);
           if (!thisColumn.includes(value)) {
@@ -223,7 +289,10 @@ function solvable(grid) {
             let thisSquare = square(grid, row, col);
             // Check that this value hasn't been used in this square
             if (!thisSquare.includes(value)) {
-              grid[row][col] = value;
+              grid[row][col] = {
+                value,
+                given: false
+              };
               if (checkGrid(grid)) {
                 solutionsCount++
                 break;
@@ -263,7 +332,9 @@ function solveGrid(grid) {
     if (grid[row][col] == null) {
       for (var value = 1; value < 10; value++) {
         // Check that this value hasn't been used in this row
-        if (!grid[row].includes(value)) {
+        let thisRow = rowValues(grid, row);
+        if (!thisRow.includes(value)) {
+          // if (!grid[row].includes(value)) {
           // Check that this value hasn't been used in this column
           let thisColumn = column(grid, col);
           if (!thisColumn.includes(value)) {
@@ -271,7 +342,10 @@ function solveGrid(grid) {
             let thisSquare = square(grid, row, col);
             // Check that this value hasn't been used in this square
             if (!thisSquare.includes(value)) {
-              grid[row][col] = value;
+              grid[row][col] = {
+                value,
+                given: false
+              };
               if (checkGrid(grid)) {
                 solutionsCount++
                 break;
@@ -328,6 +402,35 @@ function removeDigit(grid, attempts) {
   return grid;
 }
 
+function getValue(grid, row, col) {
+  if (grid[row][col] !== null) {
+    if (typeof grid[row][col].value === "number") {
+      return grid[row][col].value
+    }
+  }
+  return null
+}
+
+/**
+ * [rowValues description]
+ * @param  {[type]} grid [description]
+ * @param  {[type]} row  [description]
+ * @return {[type]}      [description]
+ */
+function rowValues(grid, row) {
+  return [
+    getValue(grid, row, 0),
+    getValue(grid, row, 1),
+    getValue(grid, row, 2),
+    getValue(grid, row, 3),
+    getValue(grid, row, 4),
+    getValue(grid, row, 5),
+    getValue(grid, row, 6),
+    getValue(grid, row, 7),
+    getValue(grid, row, 8)
+  ];
+}
+
 /**
  * Returns an array containing the contents of the column in the grid
  * @param  {[type]} grid [description]
@@ -336,15 +439,15 @@ function removeDigit(grid, attempts) {
  */
 function column(grid, col) {
   return [
-    grid[0][col],
-    grid[1][col],
-    grid[2][col],
-    grid[3][col],
-    grid[4][col],
-    grid[5][col],
-    grid[6][col],
-    grid[7][col],
-    grid[8][col]
+    getValue(grid, 0, col),
+    getValue(grid, 1, col),
+    getValue(grid, 2, col),
+    getValue(grid, 3, col),
+    getValue(grid, 4, col),
+    getValue(grid, 5, col),
+    getValue(grid, 6, col),
+    getValue(grid, 7, col),
+    getValue(grid, 8, col)
   ];
 }
 
@@ -361,115 +464,115 @@ function square(grid, row, col) {
   if (row < 3) {
     if (col < 3) {
       square = [
-        grid[0][0],
-        grid[0][1],
-        grid[0][2],
-        grid[1][0],
-        grid[1][1],
-        grid[1][2],
-        grid[2][0],
-        grid[2][1],
-        grid[2][2],
+        getValue(grid, 0, 0),
+        getValue(grid, 0, 1),
+        getValue(grid, 0, 2),
+        getValue(grid, 1, 0),
+        getValue(grid, 1, 1),
+        getValue(grid, 1, 2),
+        getValue(grid, 2, 0),
+        getValue(grid, 2, 1),
+        getValue(grid, 2, 2)
       ]
     } else if (col < 6) {
       square = [
-        grid[0][3],
-        grid[0][4],
-        grid[0][5],
-        grid[1][3],
-        grid[1][4],
-        grid[1][5],
-        grid[2][3],
-        grid[2][4],
-        grid[2][5],
+        getValue(grid, 0, 3),
+        getValue(grid, 0, 4),
+        getValue(grid, 0, 5),
+        getValue(grid, 1, 3),
+        getValue(grid, 1, 4),
+        getValue(grid, 1, 5),
+        getValue(grid, 2, 3),
+        getValue(grid, 2, 4),
+        getValue(grid, 2, 5)
       ]
     } else {
       square = [
-        grid[0][6],
-        grid[0][7],
-        grid[0][8],
-        grid[1][6],
-        grid[1][7],
-        grid[1][8],
-        grid[2][6],
-        grid[2][7],
-        grid[2][8],
+        getValue(grid, 0, 6),
+        getValue(grid, 0, 7),
+        getValue(grid, 0, 8),
+        getValue(grid, 1, 6),
+        getValue(grid, 1, 7),
+        getValue(grid, 1, 8),
+        getValue(grid, 2, 6),
+        getValue(grid, 2, 7),
+        getValue(grid, 2, 8)
       ]
     }
   } else if (row < 6) {
     if (col < 3) {
       square = [
-        grid[3][0],
-        grid[3][1],
-        grid[3][2],
-        grid[4][0],
-        grid[4][1],
-        grid[4][2],
-        grid[5][0],
-        grid[5][1],
-        grid[5][2],
+        getValue(grid, 3, 0),
+        getValue(grid, 3, 1),
+        getValue(grid, 3, 2),
+        getValue(grid, 4, 0),
+        getValue(grid, 4, 1),
+        getValue(grid, 4, 2),
+        getValue(grid, 5, 0),
+        getValue(grid, 5, 1),
+        getValue(grid, 5, 2)
       ]
     } else if (col < 6) {
       square = [
-        grid[3][3],
-        grid[3][4],
-        grid[3][5],
-        grid[4][3],
-        grid[4][4],
-        grid[4][5],
-        grid[5][3],
-        grid[5][4],
-        grid[5][5],
+        getValue(grid, 3, 3),
+        getValue(grid, 3, 4),
+        getValue(grid, 3, 5),
+        getValue(grid, 4, 3),
+        getValue(grid, 4, 4),
+        getValue(grid, 4, 5),
+        getValue(grid, 5, 3),
+        getValue(grid, 5, 4),
+        getValue(grid, 5, 5)
       ]
     } else {
       square = [
-        grid[3][6],
-        grid[3][7],
-        grid[3][8],
-        grid[4][6],
-        grid[4][7],
-        grid[4][8],
-        grid[5][6],
-        grid[5][7],
-        grid[5][8],
+        getValue(grid, 3, 6),
+        getValue(grid, 3, 7),
+        getValue(grid, 3, 8),
+        getValue(grid, 4, 6),
+        getValue(grid, 4, 7),
+        getValue(grid, 4, 8),
+        getValue(grid, 5, 6),
+        getValue(grid, 5, 7),
+        getValue(grid, 5, 8)
       ]
     }
   } else {
     if (col < 3) {
       square = [
-        grid[6][0],
-        grid[6][1],
-        grid[6][2],
-        grid[7][0],
-        grid[7][1],
-        grid[7][2],
-        grid[8][0],
-        grid[8][1],
-        grid[8][2],
+        getValue(grid, 6, 0),
+        getValue(grid, 6, 1),
+        getValue(grid, 6, 2),
+        getValue(grid, 7, 0),
+        getValue(grid, 7, 1),
+        getValue(grid, 7, 2),
+        getValue(grid, 8, 0),
+        getValue(grid, 8, 1),
+        getValue(grid, 8, 2)
       ]
     } else if (col < 6) {
       square = [
-        grid[6][3],
-        grid[6][4],
-        grid[6][5],
-        grid[7][3],
-        grid[7][4],
-        grid[7][5],
-        grid[8][3],
-        grid[8][4],
-        grid[8][5],
+        getValue(grid, 6, 3),
+        getValue(grid, 6, 4),
+        getValue(grid, 6, 5),
+        getValue(grid, 7, 3),
+        getValue(grid, 7, 4),
+        getValue(grid, 7, 5),
+        getValue(grid, 8, 3),
+        getValue(grid, 8, 4),
+        getValue(grid, 8, 5)
       ]
     } else {
       square = [
-        grid[6][6],
-        grid[6][7],
-        grid[6][8],
-        grid[7][6],
-        grid[7][7],
-        grid[7][8],
-        grid[8][6],
-        grid[8][7],
-        grid[8][8],
+        getValue(grid, 6, 6),
+        getValue(grid, 6, 7),
+        getValue(grid, 6, 8),
+        getValue(grid, 7, 6),
+        getValue(grid, 7, 7),
+        getValue(grid, 7, 8),
+        getValue(grid, 8, 6),
+        getValue(grid, 8, 7),
+        getValue(grid, 8, 8)
       ]
     }
   }
