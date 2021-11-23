@@ -7,7 +7,7 @@ body {
   background-color: $darkGrey;
   .App {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     text-align: center;
     .Board {
       display: flex;
@@ -20,4 +20,22 @@ body {
       }
     }
   }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#ThreeD {
+  align-self: center;
+  width: 800px;
+  height: 800px;
 }

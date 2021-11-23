@@ -1,10 +1,14 @@
 import React, {
   Component
 } from 'react';
+import {
+  Helmet
+} from "react-helmet";
 import './App.css';
 import Board from "./components/Board";
 import Controls from "./components/Controls";
 import NumSelector from "./components/NumSelector"
+const Isomer = require("isomer");
 
 class App extends Component {
   constructor(props) {
@@ -19,22 +23,31 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Board
-          grid={this.state.grid}
-          selectedValue={this.state.selectedValue}
-          onClickCell={this.onClickCell.bind(this)}
-        />
-        <NumSelector
-          selectedValue={this.state.selectedValue}
-          mode={this.state.mode}
-          onClickCell={this.onClickCell.bind(this)}
-          changeMode={this.changeMode.bind(this)}
-        />
-        <Controls
-          startGame={this.startGame.bind(this)}
-          solveGrid={this.solveGrid.bind(this, this.state.grid)}
-          onClickCell={this.onClickCell.bind(this)}
-        />
+        <Helmet>
+          <title>Sudokube</title>
+        </Helmet>
+        <div className="column">
+          <div className="row">
+            <div className="column">
+              <Board
+                grid={this.state.grid}
+                selectedValue={this.state.selectedValue}
+                onClickCell={this.onClickCell.bind(this)}
+              />
+              <NumSelector
+                selectedValue={this.state.selectedValue}
+                mode={this.state.mode}
+                onClickCell={this.onClickCell.bind(this)}
+                changeMode={this.changeMode.bind(this)}
+              />
+              <Controls
+                startGame={this.startGame.bind(this)}
+                solveGrid={this.solveGrid.bind(this, this.state.grid)}
+              />
+            </div>
+            <canvas width="1600" height="1600" id="ThreeD"></canvas>
+          </div>
+        </div>
       </div>
     );
   }
@@ -60,6 +73,7 @@ class App extends Component {
       grid = this.removeDigits(grid, 55)
     }
     console.log(printGrid(grid, "-"))
+    this.makeCube(grid, this.state.selectedValue);
     this.setState({
       grid
     });
@@ -94,15 +108,18 @@ class App extends Component {
         this.setState({
           selectedValue: value
         });
+        this.makeCube(this.state.grid, value);
       } else {
         this.setState({
           selectedValue: null
         })
+        this.makeCube(this.state.grid, null);
       }
 
     } else {
       // Clicked on Cell in Board
       this.updateCell(row, col, this.state.selectedValue)
+      this.makeCube(this.state.grid, this.state.selectedValue);
     }
   }
 
@@ -172,6 +189,64 @@ class App extends Component {
     this.setState({
       grid
     });
+  }
+
+  makeCube(grid, selectedValue) {
+    const iso = new Isomer(document.getElementById("ThreeD"));
+    const Shape = Isomer.Shape
+    const Point = Isomer.Point
+    const Path = Isomer.Path
+    const Color = Isomer.Color
+
+    iso.canvas.clear();
+    // Make grid
+    for (var z = 0; z <= 9; z++) {
+      for (var x = 0; x <= 9; x++) {
+        iso.add(new Path([
+          new Point(x, 0, z),
+          new Point(x, 9, z),
+          new Point(x, 0, z)
+        ]), new Color(0, 0, 0, 0.1));
+        for (var y = 0; y <= 9; y++) {
+          iso.add(new Path([
+            new Point(x, y, 0),
+            new Point(x, y, 9),
+            new Point(x, y, 0)
+          ]), new Color(0, 0, 0, 0.1));
+          iso.add(new Path([
+            new Point(0, y, z),
+            new Point(9, y, z),
+            new Point(0, y, z)
+          ]), new Color(0, 0, 0, 0.1));
+        }
+      }
+    }
+
+    // Add cubes
+    for (var row = 0; row < 9; row++) {
+      for (var col = 0; col < 9; col++) {
+        let cell = grid[row][col];
+        if (cell !== null) {
+          let color;
+          if (cell.given) color = new Color(150, 176, 152, 0.3);
+          else color = new Color(129, 199, 132, 0.3)
+          if (typeof cell.value === "number") {
+            if (cell.value === selectedValue) {
+              iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value), .9, .9, .9), color)
+            } else if (selectedValue === null) {
+              iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value), .9, .9, .9), color)
+            }
+          } else {
+            cell.value.forEach((value, i) => {
+              iso.add(Shape.Prism(new Point(row - 1, col - 1, value), .5, .5, .5), color)
+            });
+
+          }
+        }
+
+      }
+    }
+    //
   }
 
 } // end of App
@@ -329,7 +404,10 @@ function solveGrid(grid) {
   for (var i = 0; i < 81; i++) {
     row = Math.floor(i / 9);
     col = i % 9;
-    if (grid[row][col] == null) {
+    if (typeof grid[row][col] === "object" && grid[row][col] !== null && typeof grid[row][col].value !== "number") {
+      grid[row][col] = null
+    }
+    if (grid[row][col] === null) {
       for (var value = 1; value < 10; value++) {
         // Check that this value hasn't been used in this row
         let thisRow = rowValues(grid, row);
