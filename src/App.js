@@ -90,6 +90,7 @@ class App extends Component {
     let grid = this.state.grid;
     grid = solveGrid(grid);
     if (grid) {
+      this.makeCube(grid);
       this.setState({
         grid
       });
