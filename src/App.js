@@ -311,10 +311,11 @@ function removeDigit(grid, attempts) {
     col = Math.floor(Math.random() * 9)
   }
   // Copy grid
-  const gridCopy = [];
-  for (var i = 0; i < 9; i++) {
-    gridCopy[i] = [...grid[i]];
-  }
+  const gridCopy = copyGrid(grid)
+  // const gridCopy = [];
+  // for (var i = 0; i < 9; i++) {
+  //   gridCopy[i] = [...grid[i]];
+  // }
   // Remove cell and test for solvability
   gridCopy[row][col] = null;
   if (solvable(gridCopy)) {
@@ -496,7 +497,12 @@ function shuffle(array) {
   return array;
 }
 
+/**
+ * Returns a 9x9 grid full of null values
+ * @return {[type]} [description]
+ */
 function emptyGrid() {
+  const EMPTY_ROW = [null, null, null, null, null, null, null, null, null];
   const grid = [];
   for (var i = 0; i < 9; i++) {
     grid[i] = [...EMPTY_ROW];
@@ -504,6 +510,15 @@ function emptyGrid() {
   return grid;
 }
 
-const EMPTY_ROW = [null, null, null, null, null, null, null, null, null];
+/**
+ * [copyGrid description]
+ * @param  {[type]} grid [description]
+ * @return {[type]}      [description]
+ */
+function copyGrid(grid) {
+  let copy = JSON.parse(JSON.stringify(grid));
+  return copy
+}
+
 
 export default App;
