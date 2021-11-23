@@ -8,5 +8,14 @@
   margin: 1px;
   font-size: 8px;
   border-radius: 12px;
+  background-color: $darkGrey;
+  color: white;
+}
+.selected {
   background-color: $green;
+  color: $lightGrey;
+}
+.given {
+  background-color: $lightGrey;
+  color: white;
 }
