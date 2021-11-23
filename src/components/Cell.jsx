@@ -1,11 +1,22 @@
-import React, { Component } from "react";
+import React, {
+  Component
+} from "react";
 
 class Cell extends Component {
   render() {
-    return(
-      <div className="Cell">
-        {this.props.i}
-        {this.props.j}
+    const {
+      row,
+      col,
+      value,
+      selectedValue,
+      given
+    } = this.props;
+    let className = "Cell";
+    if (given) className = "Cell given"
+    if (value === selectedValue && value !== null) className = "Cell selected"
+    return (
+      <div className={className} onClick={this.props.onClick.bind(this, {row, col, value})}>
+        {value}
       </div>
     );
   }

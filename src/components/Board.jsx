@@ -1,4 +1,6 @@
-import React, { Component } from "react";
+import React, {
+  Component
+} from "react";
 import Cell from "./Cell";
 import Divider from "./Divider";
 
@@ -24,7 +26,16 @@ class Board extends Component {
     let count = 3 * val;
     for (var i = count - 2; i <= count; i++) {
       for (var j = 1; j <= 9; j++) {
-        row.push(<Cell key={j} i={i} j={j}/>);
+        row.push(
+          <Cell
+            key={j}
+            row={i}
+            col={j}
+            value={this.props.grid[i-1][j-1]}
+            given={this.props.givenValues[i-1][j-1] ? true : false}
+            selectedValue={this.props.selectedValue}
+            onClick={this.props.onClickCell}
+          />);
         // add vertical dividers
         if (j === 3 || j === 6) {
           row.push(<Divider key={`${j}_divider`} type="vertical_em"/>);
