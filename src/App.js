@@ -42,6 +42,7 @@ class App extends Component {
               />
               <Controls
                 startGame={this.startGame.bind(this)}
+                restartGame={this.restartGame.bind(this)}
                 solveGrid={this.solveGrid.bind(this, this.state.grid)}
               />
             </div>
@@ -74,6 +75,14 @@ class App extends Component {
     }
     console.log(printGrid(grid, "-"))
     this.makeCube(grid, this.state.selectedValue);
+    this.setState({
+      grid
+    });
+  }
+
+  restartGame() {
+    let grid = this.state.grid;
+    grid = erase(grid);
     this.setState({
       grid
     });
@@ -174,7 +183,6 @@ class App extends Component {
         } else if (mode === "pencil") {
           if (typeof cell.value !== "number") {
             if (cell.value.includes(value)) {
-              console.log("includes");
               grid[row - 1][col - 1].value = cell.value.filter(e => {
                 return e !== value
               });
@@ -192,6 +200,12 @@ class App extends Component {
     });
   }
 
+  /**
+   * [makeCube description]
+   * @param  {[type]} grid          [description]
+   * @param  {[type]} selectedValue [description]
+   * @return {[type]}               [description]
+   */
   makeCube(grid, selectedValue) {
     const iso = new Isomer(document.getElementById("ThreeD"));
     const Shape = Isomer.Shape
@@ -253,6 +267,24 @@ class App extends Component {
 } // end of App
 
 // Functions
+
+/**
+ * Erases all marked cells in a grid, leaving only given cells
+ * @param  {[type]} grid [description]
+ * @return {[type]}      [description]
+ */
+function erase(grid) {
+  for (var row = 0; row < 9; row++) {
+    for (var col = 0; col < 9; col++) {
+      if (grid[row][col] !== null) {
+        if (!grid[row][col].given) {
+          grid[row][col] = null;
+        }
+      }
+    }
+  }
+  return grid;
+}
 
 /**
  * Prints contents of grid to string.
