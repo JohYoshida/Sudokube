@@ -13,7 +13,10 @@ class Cell extends Component {
     } = this.props;
     let className = "Cell";
     if (given) className = "Cell given"
-    if (value === selectedValue && value !== null) className = "Cell selected"
+    if (value !== null) {
+      if (value === selectedValue) className = "Cell selected"
+      if (typeof value === "object" && value.includes(selectedValue)) className = "Cell selected"
+    }
     if (typeof value === "object" && value !== null) {
       return (
         <div className={className} onClick={this.props.onClick.bind(this, {row, col, value})}>
