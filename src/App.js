@@ -214,25 +214,26 @@ class App extends Component {
     const Color = Isomer.Color
 
     iso.canvas.clear();
+    iso.canvas.ctx.canvas.style.backgroundColor = "white"
     // Make grid
     for (var z = 0; z <= 9; z++) {
       for (var x = 0; x <= 9; x++) {
-        iso.add(new Path([
-          new Point(x, 0, z),
-          new Point(x, 9, z),
-          new Point(x, 0, z)
-        ]), new Color(0, 0, 0, 0.1));
         for (var y = 0; y <= 9; y++) {
           iso.add(new Path([
             new Point(x, y, 0),
             new Point(x, y, 9),
             new Point(x, y, 0)
-          ]), new Color(0, 0, 0, 0.1));
+          ]), new Color(x * 28, y * 28, 255));
+          iso.add(new Path([
+            new Point(x, 0, z),
+            new Point(x, 9, z),
+            new Point(x, 0, z)
+          ]), new Color(x * 28, y, x * 28));
           iso.add(new Path([
             new Point(0, y, z),
             new Point(9, y, z),
             new Point(0, y, z)
-          ]), new Color(0, 0, 0, 0.1));
+          ]), new Color(255, y * 28, z * 28));
         }
       }
     }
@@ -243,17 +244,21 @@ class App extends Component {
         let cell = grid[row][col];
         if (cell !== null) {
           let color;
-          if (cell.given) color = new Color(150, 176, 152, 0.3);
-          else color = new Color(129, 199, 132, 0.3)
+          if (cell.given) color = new Color(150, 176, 152, 0.3); // grey
+          else color = new Color(129, 199, 132, 0.3) // light green
           if (typeof cell.value === "number") {
             if (cell.value === selectedValue) {
-              iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value), .9, .9, .9), color)
+              color = new Color(47, 61, 187); // blue
+              iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value + 0.1), .9, .9, .9), color)
             } else if (selectedValue === null) {
-              iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value), .9, .9, .9), color)
+              iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value + 0.1), .9, .9, .9), color)
+            } else {
+              iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value + 0.1), .9, .9, .9), color)
             }
-          } else {
-            cell.value.forEach((value, i) => {
-              iso.add(Shape.Prism(new Point(row - 1, col - 1, value), .5, .5, .5), color)
+          } else { // pencil marks
+            cell.value.forEach((value) => {
+              if (value === selectedValue) color = new Color(47, 61, 187); // blue
+              iso.add(Shape.Prism(new Point(row - 1, col - 1, value + 0.5), .5, .5, .5), color)
             });
 
           }
