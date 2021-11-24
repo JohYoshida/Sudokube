@@ -59,7 +59,6 @@ class App extends Component {
    */
   startGame(difficulty) {
     let grid = emptyGrid();
-
     // Generate solvable grid
     while (!checkGrid(grid)) {
       grid = emptyGrid();
@@ -83,6 +82,7 @@ class App extends Component {
   restartGame() {
     let grid = this.state.grid;
     grid = erase(grid);
+    this.makeCube(grid);
     this.setState({
       grid
     });
@@ -151,6 +151,7 @@ class App extends Component {
     let cell = grid[row - 1][col - 1];
 
     if (cell === null) {
+      // Empty cell
       if (mode === "pen") {
         grid[row - 1][col - 1] = {
           value,
@@ -163,6 +164,7 @@ class App extends Component {
         };
       }
     } else {
+      // Marked cell
       if (!cell.given) {
         if (mode === "pen") {
           if (typeof cell.value === "number") {
@@ -173,8 +175,11 @@ class App extends Component {
                 value,
                 given: false
               };
+              removePencilMarks(grid, row, col, value);
             }
           } else {
+            // Write over pencil marks
+            removePencilMarks(grid, row, col, value);
             grid[row - 1][col - 1] = {
               value,
               given: false
@@ -183,10 +188,12 @@ class App extends Component {
         } else if (mode === "pencil") {
           if (typeof cell.value !== "number") {
             if (cell.value.includes(value)) {
+              // Remove pencil mark
               grid[row - 1][col - 1].value = cell.value.filter(e => {
                 return e !== value
               });
             } else {
+              // Write pencil mark
               grid[row - 1][col - 1].value.push(value);
               grid[row - 1][col - 1].value.sort();
             }
@@ -291,6 +298,46 @@ function erase(grid) {
   return grid;
 }
 
+function removePencilMarks(grid, row, col, value) {
+  // Remove from cell's row
+  let thisRow = rowPencilMarks(grid, row - 1);
+  thisRow.forEach((values, i) => {
+    if (values && values.includes(value)) {
+      grid[row - 1][i].value = grid[row - 1][i].value.filter(e => {
+        return e !== value
+      });
+    }
+  });
+
+  // Remove from cell's column
+  let thisColumn = columnPencilMarks(grid, col - 1);
+  thisColumn.forEach((values, i) => {
+    if (values && values.includes(value)) {
+      grid[i][col - 1].value = grid[i][col - 1].value.filter(e => {
+        return e !== value
+      });
+    }
+  });
+
+
+  // Remove from cell's square
+  let square = [Math.ceil(row / 3) - 1, Math.ceil(col / 3) - 1];
+  for (var i = 0; i < 3; i++) {
+    for (var j = 0; j < 3; j++) {
+      let cell = grid[square[0] * 3 + i][square[1] * 3 + j];
+      if (cell !== null && typeof cell.value !== "number") {
+        if (cell.value.includes(value)) {
+          grid[square[0] * 3 + i][square[1] * 3 + j].value = grid[square[0] * 3 + i][square[1] * 3 + j].value.filter(e => {
+            return e !== value
+          });
+        }
+      }
+    }
+  }
+
+  return grid
+}
+
 /**
  * Prints contents of grid to string.
  * @param  {[type]} grid   [description]
@@ -356,10 +403,10 @@ function fillGrid(grid) {
         if (!thisRow.includes(value)) {
           // if (!grid[row].includes(value)) {
           // Check that this value hasn't been used in this column
-          let thisColumn = column(grid, col);
+          let thisColumn = columnValues(grid, col);
           if (!thisColumn.includes(value)) {
             // Identify which square we're looking at
-            let thisSquare = square(grid, row, col);
+            let thisSquare = squareValues(grid, row, col);
             // Check that this value hasn't been used in this square
             if (!thisSquare.includes(value)) {
               grid[row][col] = {
@@ -396,10 +443,10 @@ function solvable(grid) {
         let thisRow = rowValues(grid, row);
         if (!thisRow.includes(value)) {
           // Check that this value hasn't been used in this column
-          let thisColumn = column(grid, col);
+          let thisColumn = columnValues(grid, col);
           if (!thisColumn.includes(value)) {
             // Identify which square we're looking at
-            let thisSquare = square(grid, row, col);
+            let thisSquare = squareValues(grid, row, col);
             // Check that this value hasn't been used in this square
             if (!thisSquare.includes(value)) {
               grid[row][col] = {
@@ -450,12 +497,11 @@ function solveGrid(grid) {
         // Check that this value hasn't been used in this row
         let thisRow = rowValues(grid, row);
         if (!thisRow.includes(value)) {
-          // if (!grid[row].includes(value)) {
           // Check that this value hasn't been used in this column
-          let thisColumn = column(grid, col);
+          let thisColumn = columnValues(grid, col);
           if (!thisColumn.includes(value)) {
             // Identify which square we're looking at
-            let thisSquare = square(grid, row, col);
+            let thisSquare = squareValues(grid, row, col);
             // Check that this value hasn't been used in this square
             if (!thisSquare.includes(value)) {
               grid[row][col] = {
@@ -527,6 +573,15 @@ function getValue(grid, row, col) {
   return null
 }
 
+function getPencilMarks(grid, row, col) {
+  if (grid[row][col] !== null) {
+    if (typeof grid[row][col].value === "object") {
+      return grid[row][col].value
+    }
+  }
+  return null
+}
+
 /**
  * [rowValues description]
  * @param  {[type]} grid [description]
@@ -547,13 +602,27 @@ function rowValues(grid, row) {
   ];
 }
 
+function rowPencilMarks(grid, row) {
+  return [
+    getPencilMarks(grid, row, 0),
+    getPencilMarks(grid, row, 1),
+    getPencilMarks(grid, row, 2),
+    getPencilMarks(grid, row, 3),
+    getPencilMarks(grid, row, 4),
+    getPencilMarks(grid, row, 5),
+    getPencilMarks(grid, row, 6),
+    getPencilMarks(grid, row, 7),
+    getPencilMarks(grid, row, 8)
+  ];
+}
+
 /**
  * Returns an array containing the contents of the column in the grid
  * @param  {[type]} grid [description]
  * @param  {[type]} col  [description]
  * @return {[Array]}     [9-length array of digits or null]
  */
-function column(grid, col) {
+function columnValues(grid, col) {
   return [
     getValue(grid, 0, col),
     getValue(grid, 1, col),
@@ -567,6 +636,20 @@ function column(grid, col) {
   ];
 }
 
+function columnPencilMarks(grid, col) {
+  return [
+    getPencilMarks(grid, 0, col),
+    getPencilMarks(grid, 1, col),
+    getPencilMarks(grid, 2, col),
+    getPencilMarks(grid, 3, col),
+    getPencilMarks(grid, 4, col),
+    getPencilMarks(grid, 5, col),
+    getPencilMarks(grid, 6, col),
+    getPencilMarks(grid, 7, col),
+    getPencilMarks(grid, 8, col)
+  ];
+}
+
 /**
  * Returns an array containing the contents of the square containing the
  * digit at row x col in the grid
@@ -575,7 +658,7 @@ function column(grid, col) {
  * @param  {[type]} col  [description]
  * @return {[Array]}     [9-length array of digits or null]
  */
-function square(grid, row, col) {
+function squareValues(grid, row, col) {
   let square = [];
   if (row < 3) {
     if (col < 3) {
@@ -695,7 +778,6 @@ function square(grid, row, col) {
   return square
 }
 
-
 /**
  * https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
  * @param  {[type]} array [description]
@@ -738,6 +820,5 @@ function copyGrid(grid) {
   let copy = JSON.parse(JSON.stringify(grid));
   return copy
 }
-
 
 export default App;
