@@ -9,7 +9,8 @@ class Cell extends Component {
       col,
       value,
       selectedValue,
-      given
+      given,
+      face
     } = this.props;
     let className = "Cell";
     if (given) className = "Cell given"
@@ -19,7 +20,7 @@ class Cell extends Component {
     }
     if (typeof value === "object" && value !== null) {
       return (
-        <div className={className} onClick={this.props.onClick.bind(this, {row, col, value})}>
+        <div className={className} onClick={this.props.onClick.bind(this, {row, col, value, face})}>
           <div className="row">
             <div className="subcell">
               {value.includes(1) ? 1 : null}
@@ -57,7 +58,7 @@ class Cell extends Component {
       );
     } else {
       return (
-        <div className={className} onClick={this.props.onClick.bind(this, {row, col, value})}>
+        <div className={className} onClick={this.props.onClick.bind(this, {row, col, value, face})}>
           {value}
         </div>
       );

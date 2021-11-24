@@ -1,0 +1,14 @@
+@import "Colors";
+
+.Board {
+  display: flex;
+  margin: 5px;
+  justify-content: center;
+  flex-direction: column;
+}
+.Square {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid;
+  border-color: $green;
+}

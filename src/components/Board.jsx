@@ -6,8 +6,8 @@ import Divider from "./Divider";
 
 class Board extends Component {
   render() {
-    const Board = this.makeBoard();
-    return <div className="Board">{Board}</div>;
+    const Grid = this.makeGrid();
+    return <div className="Board" key={this.props.face}>{Grid}</div>
   }
 
   makeBoard = () => {
@@ -20,55 +20,149 @@ class Board extends Component {
     return Board;
   }
 
-  makeThird = (val) => {
-    const Third = [];
-    let row = [];
-    let count = 3 * val;
-    for (var i = count - 2; i <= count; i++) {
-      for (var j = 1; j <= 9; j++) {
-        let value = null;
-        let given = false;
-        if (this.props.grid[i - 1][j - 1] !== null) {
-          value = this.props.grid[i - 1][j - 1].value
-          given = this.props.grid[i - 1][j - 1].given
+  makeGrid() {
+    const Grid = [];
+    for (var i = 0; i < 3; i++) {
+      let row = [];
+      for (var j = 0; j < 3; j++) {
+        let square
+        switch (this.props.face) {
+          case "xy":
+            square = this.makeSquareXY([i, j]);
+            break;
+          case "yz":
+            square = this.makeSquareYZ([i, j]);
+            break;
+          case "xz":
+            square = this.makeSquareXZ([i, j]);
+            break;
+
+          default:
+
         }
-        row.push(
-          <Cell
-            key={j}
-            row={i}
-            col={j}
-            value={value}
-            given={given}
-            selectedValue={this.props.selectedValue}
-            onClick={this.props.onClickCell}
-          />);
-        // add vertical dividers
-        if (j === 3 || j === 6) {
-          row.push(<Divider key={`${j}_divider`} type="vertical_em"/>);
-        } else if (j !== 9) {
-          row.push(<Divider key={`${j}_divider`} type="vertical"/>);
-        }
+        row.push(<div className="Square" key={`${i}${j}`}>{square}</div>)
       }
-      Third.push(<div className="row" key={i}>{ row }</div>);
-      row = [];
-      // add horizontal divider
-      if (i % 3 !== 0) {
-        Third.push(this.makeHorizontalDivider(`${i}_row`));
-      }
+      Grid.push(<div className="row" key={`${i}${j}`}>{row}</div>)
     }
-    return Third;
+    return Grid;
   }
 
-  makeHorizontalDivider = (key, modifier) => {
-    let row = [];
-    let type = "horizontal";
-    if (modifier === "em") {
-      type += "_em";
+  makeSquareXY(square) {
+    const Square = [];
+    let space = this.props.space;
+    for (var i = 1; i <= 3; i++) {
+      let row = [];
+      for (var j = 1; j <= 3; j++) {
+        let x = square[0] * 3 + i;
+        let y = square[1] * 3 + j;
+        // let z = null;
+        let value = [];
+        let cell;
+        for (var z = 1; z <= 9; z++) {
+          if (space[`${x}${y}${z}`]) {
+            cell = space[`${x}${y}${z}`]
+            if (cell === "given" || cell === "pen") {
+              value = z;
+              break
+            } else if (cell === "pencil") value.push(z);
+          }
+        }
+        if (typeof value === "object") z = null;
+        if (value.length === 0) value = null;
+        row.push(
+          <Cell
+            key={`xy:${x}${y}`}
+            row={x}
+            col={y}
+            value={value}
+            face={this.props.face}
+            given={cell === "given"}
+            selectedValue={this.props.selectedValue}
+            onClick={this.props.onClickCell}
+            />
+        );
+      }
+      Square.push(<div className="row" key={i}>{row}</div>)
     }
-    for (var i = 0; i < 9; i++) {
-      row.push(<Divider key={i} type={type}/>);
+    return Square;
+  }
+
+  makeSquareXZ(square) {
+    const Square = [];
+    let space = this.props.space;
+    for (var i = 1; i <= 3; i++) {
+      let row = [];
+      for (var j = 1; j <= 3; j++) {
+        let x = square[0] * 3 + i;
+        let z = square[1] * 3 + j;
+        let value = [];
+        let cell;
+        for (var y = 1; y <= 9; y++) {
+          if (space[`${x}${y}${z}`]) {
+            cell = space[`${x}${y}${z}`]
+            if (cell === "given" || cell === "pen") {
+              value = y;
+              break
+            } else if (cell === "pencil") value.push(y);
+          }
+        }
+        if (typeof value === "object") y = null;
+        if (value.length === 0) value = null;
+        row.push(
+          <Cell
+            key={`xz:${x}${z}`}
+            row={x}
+            col={z}
+            value={value}
+            face={this.props.face}
+            given={cell === "given"}
+            selectedValue={this.props.selectedValue}
+            onClick={this.props.onClickCell}
+            />
+        );
+      }
+      Square.push(<div className="row" key={i}>{row}</div>)
     }
-    return (<div className="row" key={key}>{ row }</div>);
+    return Square;
+  }
+
+  makeSquareYZ(square) {
+    const Square = [];
+    let space = this.props.space;
+    for (var i = 1; i <= 3; i++) {
+      let row = [];
+      for (var j = 1; j <= 3; j++) {
+        let y = square[0] * 3 + i;
+        let z = square[1] * 3 + j;
+        let value = [];
+        let cell;
+        for (var x = 1; x <= 9; x++) {
+          if (space[`${x}${y}${z}`]) {
+            cell = space[`${x}${y}${z}`]
+            if (cell === "given" || cell === "pen") {
+              value = x;
+              break
+            } else if (cell === "pencil") value.push(x);
+          }
+        }
+        if (typeof value === "object") x = null;
+        if (value.length === 0) value = null;
+        row.push(
+          <Cell
+            key={`yz:${y}${z}`}
+            row={y}
+            col={z}
+            value={value}
+            face={this.props.face}
+            given={cell === "given"}
+            selectedValue={this.props.selectedValue}
+            onClick={this.props.onClickCell}
+            />
+        );
+      }
+      Square.push(<div className="row" key={i}>{row}</div>)
+    }
+    return Square;
   }
 }
 

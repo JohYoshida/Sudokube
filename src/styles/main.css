@@ -6,6 +6,7 @@
   margin: 1px;
   font-size: 20px;
   border-radius: 30px;
+  border: 1px solid #96b098;
   background-color: #212121;
   color: white;
   justify-content: center;
@@ -71,6 +72,20 @@
   flex-direction: row;
 }
 
+.Board {
+  display: flex;
+  margin: 5px;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.Square {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid;
+  border-color: #81C784;
+}
+
 body {
   background-color: #212121;
 }
@@ -79,15 +94,8 @@ body .App {
   flex-direction: row;
   text-align: center;
 }
-body .App .Board {
-  display: flex;
-  margin: 5px;
-  justify-content: center;
-  flex-direction: column;
-}
-body .App .Board .row {
-  display: flex;
-  justify-content: center;
+body .App h2 {
+  color: white;
 }
 
 .row {

@@ -14,6 +14,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      space: {},
       grid: emptyGrid(),
       selectedValue: null,
       mode: "pen"
@@ -29,11 +30,38 @@ class App extends Component {
         <div className="column">
           <div className="row">
             <div className="column">
-              <Board
-                grid={this.state.grid}
-                selectedValue={this.state.selectedValue}
-                onClickCell={this.onClickCell.bind(this)}
-              />
+              <div className="row">
+                <div className="column">
+                  <h2>xy</h2>
+                  <Board
+                    grid={this.state.grid}
+                    space={this.state.space}
+                    selectedValue={this.state.selectedValue}
+                    onClickCell={this.onClickCell.bind(this)}
+                    face={"xy"}
+                    />
+                </div>
+                <div className="column">
+                  <h2>yz</h2>
+                  <Board
+                    grid={this.state.grid}
+                    space={this.state.space}
+                    selectedValue={this.state.selectedValue}
+                    onClickCell={this.onClickCell.bind(this)}
+                    face={"yz"}
+                    />
+                </div>
+                <div className="column">
+                  <h2>xz</h2>
+                  <Board
+                    grid={this.state.grid}
+                    space={this.state.space}
+                    selectedValue={this.state.selectedValue}
+                    onClickCell={this.onClickCell.bind(this)}
+                    face={"xz"}
+                    />
+                </div>
+              </div>
               <NumSelector
                 selectedValue={this.state.selectedValue}
                 mode={this.state.mode}
@@ -74,8 +102,10 @@ class App extends Component {
     }
     console.log(printGrid(grid, "-"))
     this.makeCube(grid, this.state.selectedValue);
+    let space = makeSpace(grid);
     this.setState({
-      grid
+      grid,
+      space
     });
   }
 
@@ -83,8 +113,10 @@ class App extends Component {
     let grid = this.state.grid;
     grid = erase(grid);
     this.makeCube(grid);
+    let space = makeSpace(grid);
     this.setState({
-      grid
+      grid,
+      space
     });
   }
 
@@ -100,8 +132,10 @@ class App extends Component {
     grid = solveGrid(grid);
     if (grid) {
       this.makeCube(grid);
+      let space = makeSpace(grid);
       this.setState({
-        grid
+        grid,
+        space
       });
     }
   }
@@ -110,7 +144,8 @@ class App extends Component {
     const {
       row,
       col,
-      value
+      value,
+      face
     } = cell;
     if (!row && !col) {
       // Clicked on NumSelector
@@ -128,7 +163,7 @@ class App extends Component {
 
     } else {
       // Clicked on Cell in Board
-      this.updateCell(row, col, this.state.selectedValue)
+      this.updateCell(row, col, this.state.selectedValue, face)
       this.makeCube(this.state.grid, this.state.selectedValue);
     }
   }
@@ -145,7 +180,18 @@ class App extends Component {
     });
   }
 
-  updateCell(row, col, value) {
+  updateCell(row, col, value, face) {
+    if (face === "yz") {
+      let temp = value;
+      value = col
+      col = row;
+      row = temp;
+    }
+    if (face === "xz") {
+      let temp = value;
+      value = col
+      col = temp;
+    }
     let grid = this.state.grid;
     let mode = this.state.mode;
     let cell = grid[row - 1][col - 1];
@@ -202,8 +248,10 @@ class App extends Component {
 
       }
     }
+    let space = makeSpace(grid);
     this.setState({
-      grid
+      grid,
+      space
     });
   }
 
@@ -280,6 +328,37 @@ class App extends Component {
 
 // Functions
 
+function XYZtoYZX(x, y, z) {
+  return {
+    x: y,
+    y: z,
+    z: x
+  }
+}
+
+function makeSpace(grid) {
+  const Space = {};
+
+  grid.forEach((row, i) => {
+    row.forEach((cell, j) => {
+      let x = i + 1;
+      let y = j + 1;
+      if (cell !== null) {
+        if (typeof cell.value === "number") {
+          let z = cell.value;
+          Space[`${x}${y}${z}`] = cell.given ? "given" : "pen";
+        } else {
+          cell.value.forEach((value, i) => {
+            let z = value;
+            Space[`${x}${y}${z}`] = "pencil";
+          });
+        }
+      }
+    });
+  });
+  return Space;
+}
+
 /**
  * Erases all marked cells in a grid, leaving only given cells
  * @param  {[type]} grid [description]
@@ -308,7 +387,6 @@ function removePencilMarks(grid, row, col, value) {
       });
     }
   });
-
   // Remove from cell's column
   let thisColumn = columnPencilMarks(grid, col - 1);
   thisColumn.forEach((values, i) => {
@@ -318,8 +396,6 @@ function removePencilMarks(grid, row, col, value) {
       });
     }
   });
-
-
   // Remove from cell's square
   let square = [Math.ceil(row / 3) - 1, Math.ceil(col / 3) - 1];
   for (var i = 0; i < 3; i++) {
