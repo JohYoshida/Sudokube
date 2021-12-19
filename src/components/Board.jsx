@@ -2,7 +2,6 @@ import React, {
   Component
 } from "react";
 import Cell from "./Cell";
-import Divider from "./Divider";
 
 class Board extends Component {
   render() {
