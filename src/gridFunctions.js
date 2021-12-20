@@ -140,17 +140,47 @@ function checkValue(grid, row, col, value) {
       let thisSquare = squareValues(grid, row, col);
       // Check that this value hasn't been used in this square
       if (!thisSquare.includes(value)) {
-        return true;
-        // grid[row][col] = {
-        //   value,
-        //   given: true
-        // };
-        // if (checkGrid(grid)) return true;
-        // else if (fillGrid(grid)) return true;
+        // Check that this value conforms to 3D rules
+        if (checkValue3D(grid, row, col, value)) {
+          return true;
+        }
       }
     }
   }
   return false;
+}
+
+/**
+ * Checks if the value violates the 3D sudoku condition and returns true iff the
+ * value is legal, else false
+ * @param  {[type]} grid  [description]
+ * @param  {[type]} row   [description]
+ * @param  {[type]} col   [description]
+ * @param  {[type]} value [description]
+ * @return {[boolean]}    [description]
+ */
+function checkValue3D(grid, row, col, value) {
+  const sets = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+  // Find set that row, col, and value are in
+  const rowSet = sets[Math.ceil((row + 1) / 3) - 1];
+  const colSet = sets[Math.ceil((col + 1) / 3) - 1];
+  const valueSet = sets[Math.ceil(value / 3) - 1];
+  let flag = true;
+  // check row set for values in valueSet
+  rowSet.forEach(item => {
+    let val = getValue(grid, item - 1, col);
+    if (valueSet.includes(val)) {
+      flag = false;
+    }
+  });
+  // check col set for values in valueSet
+  colSet.forEach(item => {
+    let val = getValue(grid, row, item - 1);
+    if (valueSet.includes(val)) {
+      flag = false;
+    }
+  });
+  return flag;
 }
 
 /**
@@ -168,7 +198,7 @@ function fillGrid(grid) {
       shuffle(numberList);
       for (var index in numberList) {
         let value = numberList[index];
-        // Check that this value hasn't been used in this row
+        // Check that this value is legal
         if (checkValue(grid, row, col, value)) {
           grid[row][col] = {
             value,
@@ -184,9 +214,9 @@ function fillGrid(grid) {
 }
 
 /**
- * Attempts to solve the given sudoku grid.
+ * Attempts to solve the given sudoku grid, and returns true if it's solvable
  * @param  {[type]} grid [description]
- * @return {Bool}        [description]
+ * @return {boolean}     [description]
  */
 function solvable(grid) {
   let solutionsCount = 0;
@@ -198,7 +228,7 @@ function solvable(grid) {
     col = i % 9;
     if (grid[row][col] == null) {
       for (var value = 1; value < 10; value++) {
-        // Check that this value hasn't been used in this row
+        // Check that this value is legal
         if (checkValue(grid, row, col, value)) {
           grid[row][col] = {
             value,
