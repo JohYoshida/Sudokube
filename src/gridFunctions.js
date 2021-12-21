@@ -334,7 +334,7 @@ function removeDigit(grid, attempts) {
 
 function removeDigits(grid, num) {
   for (var i = 0; i < num; i++) {
-    grid = removeDigit(grid, 5);
+    grid = removeDigit(grid, 10);
   }
   return grid;
 }
