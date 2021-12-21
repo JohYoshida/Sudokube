@@ -3,11 +3,13 @@ import React, {
 } from 'react';
 import Cell from "./Cell";
 import ModeSelector from "./ModeSelector";
+import ColorToggler from "./ColorToggler";
 
 class NumSelector extends Component {
 
   render() {
     let numbers = [];
+    let controls = []
     for (var i = 1; i <= 9; i++) {
       numbers.push(
         <Cell
@@ -19,7 +21,7 @@ class NumSelector extends Component {
       );
     }
     // Add mode selector
-    numbers.push(
+    controls.push(
       <ModeSelector
         key="mode"
         value="e"
@@ -27,9 +29,25 @@ class NumSelector extends Component {
         selectedValue={this.props.mode}
       />
     );
+    // Add show color toggle
+    controls.push(
+      <ColorToggler
+        key="color"
+        value="c"
+        showColors={this.props.showColors}
+        onClick={this.props.toggleColors}
+      />
+    );
     return (
       <div className="NumSelector">
-        {numbers}
+        <div className="col">
+          <div className="row">
+            {numbers}
+          </div>
+          <div className="row">
+            {controls}
+          </div>
+        </div>
       </div>
     );
   }

@@ -29,6 +29,7 @@ class App extends Component {
       grid: emptyGrid(),
       selectedValue: null,
       mode: "pen"
+      showColors: false
     };
   }
 
@@ -50,6 +51,7 @@ class App extends Component {
                     selectedValue={this.state.selectedValue}
                     onClickCell={this.onClickCell.bind(this)}
                     face={"xy"}
+                    showColors={this.state.showColors}
                     />
                 </div>
                 <div className="column">
@@ -60,6 +62,7 @@ class App extends Component {
                     selectedValue={this.state.selectedValue}
                     onClickCell={this.onClickCell.bind(this)}
                     face={"yz"}
+                    showColors={this.state.showColors}
                     />
                 </div>
                 <div className="column">
@@ -70,6 +73,7 @@ class App extends Component {
                     selectedValue={this.state.selectedValue}
                     onClickCell={this.onClickCell.bind(this)}
                     face={"xz"}
+                    showColors={this.state.showColors}
                     />
                 </div>
               </div>
@@ -78,6 +82,8 @@ class App extends Component {
                 mode={this.state.mode}
                 onClickCell={this.onClickCell.bind(this)}
                 changeMode={this.changeMode.bind(this)}
+                showColors={this.state.showColors}
+                toggleColors={this.toggleColors.bind(this)}
               />
               <Controls
                 startGame={this.startGame.bind(this)}
@@ -180,6 +186,13 @@ class App extends Component {
     }
     this.setState({
       mode
+    });
+  }
+
+  toggleColors() {
+    let show = this.state.showColors;
+    this.setState({
+      showColors: !show
     });
   }
 
@@ -295,7 +308,6 @@ class App extends Component {
         }
       }
     }
-
     // Add cubes
     for (var row = 0; row < 9; row++) {
       for (var col = 0; col < 9; col++) {
@@ -314,22 +326,16 @@ class App extends Component {
               iso.add(Shape.Prism(new Point(row - 1, col - 1, cell.value + 0.1), .9, .9, .9), color)
             }
           } else { // pencil marks
-            cell.value.forEach((value) => {
+            cell.value.forEach(value => {
               if (value === selectedValue) color = new Color(47, 61, 187); // blue
               iso.add(Shape.Prism(new Point(row - 1, col - 1, value + 0.5), .5, .5, .5), color)
             });
-
           }
         }
-
       }
     }
-    //
   }
 
 } // end of App
-
-// Functions
-
 
 export default App;

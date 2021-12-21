@@ -76,9 +76,10 @@ class Board extends Component {
             value={value}
             face={this.props.face}
             given={cell === "given"}
+            showColors={this.props.showColors}
             selectedValue={this.props.selectedValue}
             onClick={this.props.onClickCell}
-            />
+          />
         );
       }
       Square.push(<div className="row" key={i}>{row}</div>)
@@ -115,6 +116,7 @@ class Board extends Component {
             value={value}
             face={this.props.face}
             given={cell === "given"}
+            showColors={this.props.showColors}
             selectedValue={this.props.selectedValue}
             onClick={this.props.onClickCell}
             />
@@ -154,6 +156,7 @@ class Board extends Component {
             value={value}
             face={this.props.face}
             given={cell === "given"}
+            showColors={this.props.showColors}
             selectedValue={this.props.selectedValue}
             onClick={this.props.onClickCell}
             />

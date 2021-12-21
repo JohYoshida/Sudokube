@@ -10,13 +10,26 @@ class Cell extends Component {
       value,
       selectedValue,
       given,
-      face
+      face,
+      showColors
     } = this.props;
     let className = "Cell";
     if (given) className = "Cell given"
     if (value !== null) {
+      if (typeof value === "object" && value.includes(selectedValue)) {
+        className = "Cell selected"
+      } else {
+        if (showColors) {
+          if ([1, 2, 3].includes(value)) {
+            className = "Cell A"
+          } else if ([4, 5, 6].includes(value)) {
+            className = "Cell B"
+          } else if ([7, 8, 9].includes(value)) {
+            className = "Cell C"
+          }
+        }
+      }
       if (value === selectedValue) className = "Cell selected"
-      if (typeof value === "object" && value.includes(selectedValue)) className = "Cell selected"
     }
     if (typeof value === "object" && value !== null) {
       return (
