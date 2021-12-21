@@ -8,8 +8,8 @@
   margin: 1px;
   font-size: 20px;
   border-radius: 30px;
-  border: 1px solid $greyGreen;
-  background-color: $darkGrey;
+  border: 1px solid $accent;
+  background-color: $background;
   color: white;
   justify-content: center;
 
@@ -28,11 +28,20 @@
     }
   }
 }
+.A {
+  background-color: $A;
+}
+.B {
+  background-color: $B;
+}
+.C {
+  background-color: $C;
+}
 .selected {
-  background-color: $green;
+  background-color: $selected;
   color: $lightGrey;
 }
 .given {
-  background-color: $lightGrey;
+  background-color: $border;
   color: white;
 }

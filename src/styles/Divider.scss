@@ -1,14 +1,14 @@
 @import "Colors";
 
 .Divider {
-  background-color: $green;
+  background-color: $accent;
 }
 .vertical {
   height: 30px;
   width: 1px;
   margin-top: 6px;
   margin-bottom: 6px;
-  background-color: $greyGreen;
+  background-color: $accent;
 }
 .vertical_em {
   height: 43px;
@@ -19,7 +19,7 @@
   width: 30px;
   margin-left: 7px;
   margin-right: 6px;
-  background-color: $greyGreen;
+  background-color: $accent;
 }
 .horizontal_em {
   height: 1px;

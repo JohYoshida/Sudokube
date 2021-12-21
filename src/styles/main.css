@@ -6,7 +6,7 @@
   margin: 1px;
   font-size: 20px;
   border-radius: 30px;
-  border: 1px solid #96b098;
+  border: 1px solid #BBDEFB;
   background-color: #212121;
   color: white;
   justify-content: center;
@@ -25,18 +25,30 @@
   justify-content: center;
 }
 
-.selected {
+.A {
   background-color: #81C784;
+}
+
+.B {
+  background-color: #7CB342;
+}
+
+.C {
+  background-color: #1B5E20;
+}
+
+.selected {
+  background-color: #64B5F6;
   color: #4a4848;
 }
 
 .given {
-  background-color: #4a4848;
+  background-color: #546E7A;
   color: white;
 }
 
 .Divider {
-  background-color: #81C784;
+  background-color: #BBDEFB;
 }
 
 .vertical {
@@ -44,7 +56,7 @@
   width: 1px;
   margin-top: 6px;
   margin-bottom: 6px;
-  background-color: #96b098;
+  background-color: #BBDEFB;
 }
 
 .vertical_em {
@@ -57,7 +69,7 @@
   width: 30px;
   margin-left: 7px;
   margin-right: 6px;
-  background-color: #96b098;
+  background-color: #BBDEFB;
 }
 
 .horizontal_em {
@@ -83,7 +95,7 @@
   display: flex;
   flex-direction: column;
   border: 2px solid;
-  border-color: #81C784;
+  border-color: #546E7A;
 }
 
 body {
