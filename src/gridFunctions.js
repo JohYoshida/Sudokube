@@ -128,7 +128,7 @@ function checkGrid(grid) {
  * @param  {[type]} row   [description]
  * @param  {[type]} col   [description]
  * @param  {[type]} value [description]
- * @return {[boolean]}    Returns true iff value is legal, else false
+ * @return {[Boolean]}    Returns true iff value is legal, else false
  */
 function checkValue(grid, row, col, value) {
   let thisRow = rowValues(grid, row);
@@ -157,7 +157,7 @@ function checkValue(grid, row, col, value) {
  * @param  {[type]} row   [description]
  * @param  {[type]} col   [description]
  * @param  {[type]} value [description]
- * @return {[boolean]}    [description]
+ * @return {[Boolean]}    [description]
  */
 function checkValue3D(grid, row, col, value) {
   const sets = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
@@ -216,7 +216,7 @@ function fillGrid(grid) {
 /**
  * Attempts to solve the given sudoku grid, and returns true if it's solvable
  * @param  {[type]} grid [description]
- * @return {boolean}     [description]
+ * @return {Boolean}     [description]
  */
 function solvable(grid) {
   let solutionsCount = 0;
