@@ -1,5 +1,13 @@
 class Sudokube {
-  constructor(puzzle, solution) {
+  constructor() {
+    this.puzzle = "";
+    this.solution = "";
+    this.space = {};
+    this.history = [];
+    this.historyIndex = -1;
+  }
+
+  init(puzzle, solution) {
     this.puzzle = puzzle;
     this.solution = solution;
     this.space = this.stringToSpace(puzzle);
