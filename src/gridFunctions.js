@@ -1,82 +1,3 @@
-function makeSpace(grid) {
-  const Space = {};
-  grid.forEach((row, i) => {
-    row.forEach((cell, j) => {
-      let x = i + 1;
-      let y = j + 1;
-      if (cell !== null) {
-        if (typeof cell.value === "number") {
-          let z = cell.value;
-          Space[`${x}${y}${z}`] = cell.given ? "given" : "pen";
-        } else {
-          cell.value.forEach((value, i) => {
-            let z = value;
-            Space[`${x}${y}${z}`] = "pencil";
-          });
-        }
-      }
-    });
-  });
-  return Space;
-}
-
-/**
- * Erases all marked cells in a grid, leaving only given cells
- * @param  {[type]} grid [description]
- * @return {[type]}      [description]
- */
-function erase(grid) {
-  for (var row = 0; row < 9; row++) {
-    for (var col = 0; col < 9; col++) {
-      if (grid[row][col] !== null) {
-        if (!grid[row][col].given) {
-          grid[row][col] = null;
-        }
-      }
-    }
-  }
-  return grid;
-}
-
-function removePencilMarks(grid, row, col, value) {
-  // Remove from cell's row
-  let thisRow = rowPencilMarks(grid, row - 1);
-  thisRow.forEach((values, i) => {
-    if (values && values.includes(value)) {
-      grid[row - 1][i].value = grid[row - 1][i].value.filter(e => {
-        return e !== value;
-      });
-    }
-  });
-  // Remove from cell's column
-  let thisColumn = columnPencilMarks(grid, col - 1);
-  thisColumn.forEach((values, i) => {
-    if (values && values.includes(value)) {
-      grid[i][col - 1].value = grid[i][col - 1].value.filter(e => {
-        return e !== value;
-      });
-    }
-  });
-  // Remove from cell's square
-  let square = [Math.ceil(row / 3) - 1, Math.ceil(col / 3) - 1];
-  for (var i = 0; i < 3; i++) {
-    for (var j = 0; j < 3; j++) {
-      let cell = grid[square[0] * 3 + i][square[1] * 3 + j];
-      if (cell !== null && typeof cell.value !== "number") {
-        if (cell.value.includes(value)) {
-          grid[square[0] * 3 + i][square[1] * 3 + j].value = grid[
-            square[0] * 3 + i
-          ][square[1] * 3 + j].value.filter(e => {
-            return e !== value;
-          });
-        }
-      }
-    }
-  }
-
-  return grid;
-}
-
 /**
  * Prints contents of grid to string.
  * @param  {[type]} grid   [description]
@@ -310,7 +231,10 @@ function solveGrid(grid) {
  * @return {[type]}      [description]
  */
 function removeDigit(grid, attempts) {
-  if (attempts <= 0) return grid;
+  if (attempts <= 0) {
+    // console.log("Couldn't remove digit: out of attempts");
+    return grid;
+  }
   // Select a random filled cell
   let row = Math.floor(Math.random() * 9);
   let col = Math.floor(Math.random() * 9);
@@ -320,10 +244,12 @@ function removeDigit(grid, attempts) {
   }
   // Copy grid
   const gridCopy = copyGrid(grid);
+  const digit = gridCopy[row][col].value;
   // Remove cell and test for solvability
   gridCopy[row][col] = null;
   if (solvable(gridCopy)) {
     grid[row][col] = null;
+    // console.log("Removed", digit, "from", row + 1, col + 1);
     return grid;
   } else {
     attempts--;
