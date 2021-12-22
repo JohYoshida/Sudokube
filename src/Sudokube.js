@@ -202,14 +202,55 @@ class Sudokube {
     const commit = [];
     if (action && mode && x && y && z) {
       if (action === "write") {
-        // remove any other pen marks at xy
-        for (var i = 1; i <= 9; i++) {
-          if (this.space[`${x}${y}${i}`] === "pen") {
-            this.space[`${x}${y}${i}`] = null;
-            commit.push({action: "erase", mode, x, y, z: i});
+        if (mode === "pen") {
+          // remove marks
+          for (var i = 1; i <= 9; i++) {
+            // remove any other marks at xy
+            if (
+              this.space[`${x}${y}${i}`] === "pen" ||
+              this.space[`${x}${y}${i}`] === "pencil"
+            ) {
+              commit.push({
+                action: "erase",
+                mode: this.space[`${x}${y}${i}`],
+                x,
+                y,
+                z: i
+              });
+              this.space[`${x}${y}${i}`] = null;
+            }
+            // remove pencil marks from row
+            if (this.space[`${x}${i}${z}`] === "pencil") {
+              this.space[`${x}${i}${z}`] = null;
+              commit.push({action: "erase", mode: "pencil", x, y: i, z});
+            }
+            // remove pencil marks from column
+            if (this.space[`${i}${y}${z}`] === "pencil") {
+              this.space[`${i}${y}${z}`] = null;
+              commit.push({action: "erase", mode: "pencil", x: i, y, z});
+            }
+          }
+          // remove pencil marks from square
+          for (i = 0; i <= 2; i++) {
+            for (var j = 0; j <= 2; j++) {
+              let rowStart = x - ((x - 1) % 3);
+              let colStart = y - ((y - 1) % 3);
+              if (
+                this.space[`${rowStart + i}${colStart + j}${z}`] === "pencil"
+              ) {
+                this.space[`${rowStart + i}${colStart + j}${z}`] = null;
+                commit.push({
+                  action: "erase",
+                  mode: "pencil",
+                  x: rowStart + i,
+                  y: colStart + j,
+                  z
+                });
+              }
+            }
           }
         }
-        // make new pen mark
+        // make new mark
         this.space[`${x}${y}${z}`] = mode;
         commit.push(alteration);
       } else if (action === "erase") {
