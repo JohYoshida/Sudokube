@@ -598,14 +598,4 @@ function copyGrid(grid) {
   return copy;
 }
 
-export {
-  checkGrid,
-  emptyGrid,
-  fillGrid,
-  printGrid,
-  makeSpace,
-  erase,
-  removeDigits,
-  solveGrid,
-  removePencilMarks
-};
+export {checkGrid, emptyGrid, fillGrid, printGrid, removeDigits};

@@ -4,6 +4,8 @@ import React, {
 import Cell from "./Cell";
 import ModeSelector from "./ModeSelector";
 import ColorToggler from "./ColorToggler";
+import UndoButton from "./UndoButton";
+import RedoButton from "./RedoButton";
 
 class NumSelector extends Component {
 
@@ -36,6 +38,22 @@ class NumSelector extends Component {
         value="c"
         showColors={this.props.showColors}
         onClick={this.props.toggleColors}
+      />
+    );
+    // Add undo button
+    controls.push(
+      <UndoButton
+        key="undo"
+        value="u"
+        onClick={this.props.undo}
+      />
+    );
+    // Add redo button
+    controls.push(
+      <RedoButton
+        key="redo"
+        value="r"
+        onClick={this.props.redo}
       />
     );
     return (

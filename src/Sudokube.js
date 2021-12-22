@@ -15,6 +15,29 @@ class Sudokube {
     this.historyIndex = -1;
   }
 
+  solve() {
+    for (var x = 1; x <= 9; x++) {
+      for (var y = 1; y <= 9; y++) {
+        let index = (x - 1) * 9 + (y - 1);
+        if (this.solution[index] !== this.puzzle[index]) {
+          this.do({
+            action: "write",
+            mode: "pen",
+            x,
+            y,
+            z: this.solution[index]
+          });
+        }
+      }
+    }
+  }
+
+  reset() {
+    this.space = this.stringToSpace(this.puzzle);
+    this.history = [];
+    this.historyIndex = -1;
+  }
+
   /**
    * Fill space from puzzle string
    * @param {[String]}81-character string representing valid Sudokube xy-face
