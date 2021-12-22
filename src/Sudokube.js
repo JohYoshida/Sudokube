@@ -300,3 +300,5 @@ function printGrid(grid, spacer) {
   }
   return string;
 }
+
+export default Sudokube;
