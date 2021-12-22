@@ -9,16 +9,6 @@ class Board extends Component {
     return <div className="Board" key={this.props.face}>{Grid}</div>
   }
 
-  makeBoard = () => {
-    const Board = [];
-    Board.push(this.makeThird(1));
-    Board.push(this.makeHorizontalDivider("top_em", "em"));
-    Board.push(this.makeThird(2));
-    Board.push(this.makeHorizontalDivider("bottom_em", "em"));
-    Board.push(this.makeThird(3));
-    return Board;
-  }
-
   makeGrid() {
     const Grid = [];
     for (var i = 0; i < 3; i++) {
