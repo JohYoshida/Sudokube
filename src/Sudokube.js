@@ -143,6 +143,7 @@ class Sudokube {
   undo() {
     if (this.historyIndex >= 0) {
       let block = this.history[this.historyIndex];
+      block.reverse();
       block.forEach((alteration, i) => {
         const {action, mode, x, y, z} = alteration;
         if (action === "write") {
