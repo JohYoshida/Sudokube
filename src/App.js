@@ -24,6 +24,7 @@ class App extends Component {
     this.state = {
       sudokube: new Sudokube(),
       selectedValue: null,
+      hover: null,
       mode: "pen",
       showColors: true,
     };
@@ -45,6 +46,8 @@ class App extends Component {
                     space={this.state.sudokube.space}
                     selectedValue={this.state.selectedValue}
                     onClickCell={this.onClickCell.bind(this)}
+                    onHover={this.onHover.bind(this)}
+                    hover={this.state.hover}
                     face={"xy"}
                     showColors={this.state.showColors}
                     />
@@ -55,6 +58,8 @@ class App extends Component {
                     space={this.state.sudokube.space}
                     selectedValue={this.state.selectedValue}
                     onClickCell={this.onClickCell.bind(this)}
+                    onHover={this.onHover.bind(this)}
+                    hover={this.state.hover}
                     face={"yz"}
                     showColors={this.state.showColors}
                     />
@@ -65,6 +70,8 @@ class App extends Component {
                     space={this.state.sudokube.space}
                     selectedValue={this.state.selectedValue}
                     onClickCell={this.onClickCell.bind(this)}
+                    onHover={this.onHover.bind(this)}
+                    hover={this.state.hover}
                     face={"xz"}
                     showColors={this.state.showColors}
                     />
@@ -143,6 +150,7 @@ class App extends Component {
   compare() {
     let sdk = this.state.sudokube;
     sdk.compare();
+    this.setState({});
   }
 
   onClickCell(cell) {
@@ -169,7 +177,49 @@ class App extends Component {
       // Clicked on Cell in Board
       this.updateSudokube(row, col, this.state.selectedValue, face)
       this.renderSudokube(this.state.sudokube.space, this.state.selectedValue);
+      if (value === this.state.selectedValue) {
+        this.onHover({
+          row,
+          col,
+          value: null,
+          face
+        });
+      } else {
+        this.onHover({
+          row,
+          col,
+          value: this.state.selectedValue,
+          face
+        });
+      }
     }
+  }
+
+  onHover(cell) {
+    const {
+      row,
+      col,
+      value,
+      face
+    } = cell;
+    let x, y, z;
+    if (face === "xy") {
+      x = row;
+      y = col;
+      z = value;
+    } else if (face === "yz") {
+      y = row;
+      z = col;
+      x = value;
+
+    } else if (face === "xz") {
+      x = row;
+      z = col;
+      y = value;
+    }
+    this.setState({
+      hover: `${x}-${y}-${z}`
+    })
   }
 
   changeMode() {
@@ -209,7 +259,7 @@ class App extends Component {
     let point = this.state.sudokube.space[`${x}${y}${z}`];
     let mode = this.state.mode;
     if (point) {
-      if (point === mode) {
+      if (point === mode || point === "invalid") {
         // erase pen mark
         this.state.sudokube.do({
           action: "erase",

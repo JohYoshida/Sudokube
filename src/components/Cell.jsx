@@ -9,12 +9,13 @@ class Cell extends Component {
       col,
       value,
       selectedValue,
-      given,
+      mode,
       face,
       showColors
     } = this.props;
     let className = "Cell";
-    if (given) className = "Cell given"
+    // Handle cell coloring
+    if (mode === "given") className = "Cell given"
     if (value !== null) {
       if (typeof value === "object" && value.includes(selectedValue)) {
         className = "Cell selected"
@@ -30,10 +31,55 @@ class Cell extends Component {
         }
       }
       if (value === selectedValue) className = "Cell selected"
+      if (mode === "invalid") className = "Cell invalid"
+    }
+    // Handle hover highlighting
+    if (this.props.hover) {
+      let coords = this.props.hover.split("-");
+      if (!coords.includes("null")) {
+        if (row === Number(coords[0]) && col === Number(coords[1]) && value === Number(coords[2])) {
+          className += " hover"
+        } else if (row === Number(coords[1]) && col === Number(coords[2]) && value === Number(coords[0])) {
+          className += " hover"
+        } else if (row === Number(coords[0]) && col === Number(coords[2]) && value === Number(coords[1])) {
+          className += " hover"
+        }
+      } else {
+        if (coords[0] === "null") {
+          if (face === "xy" && col === Number(coords[1])) {
+            className += " hover"
+          } else if (face === "xz" && col === Number(coords[2])) {
+            className += " hover"
+          } else if (face === "yz" && row === Number(coords[1]) && col === Number(coords[2])) {
+            className += " hover"
+          }
+        }
+        if (coords[1] === "null") {
+          if (face === "xy" && row === Number(coords[0])) {
+            className += " hover"
+          } else if (face === "yz" && col === Number(coords[2])) {
+            className += " hover"
+          } else if (face === "xz" && row === Number(coords[0]) && col === Number(coords[2])) {
+            className += " hover"
+          }
+        }
+        if (coords[2] === "null") {
+          if (face === "xz" && row === Number(coords[0])) {
+            className += " hover"
+          } else if (face === "yz" && row === Number(coords[1])) {
+            className += " hover"
+          } else if (face === "xy" && row === Number(coords[0]) && col === Number(coords[1])) {
+            className += " hover"
+          }
+        }
+      }
     }
     if (typeof value === "object" && value !== null) {
       return (
-        <div className={className} onClick={this.props.onClick.bind(this, {row, col, value, face})}>
+        <div className={className}
+          onClick={this.props.onClick.bind(this, {row, col, value, face})}
+          onMouseOver={this.props.onHover.bind(this, {row, col, value, face})}
+          >
           <div className="row">
             <div className="subcell">
               {value.includes(1) ? 1 : null}
@@ -71,7 +117,10 @@ class Cell extends Component {
       );
     } else {
       return (
-        <div className={className} onClick={this.props.onClick.bind(this, {row, col, value, face})}>
+        <div className={className}
+          onClick={this.props.onClick.bind(this, {row, col, value, face})}
+          onMouseOver={this.props.onHover ? this.props.onHover.bind(this, {row, col, value, face}) : null}
+          >
           {value}
         </div>
       );

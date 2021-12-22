@@ -45,3 +45,9 @@
   background-color: $border;
   color: white;
 }
+.invalid {
+  background-color: $invalid;
+}
+.hover {
+  border: 1px solid $selected;
+}

@@ -50,7 +50,7 @@ class Board extends Component {
         for (var z = 1; z <= 9; z++) {
           if (space[`${x}${y}${z}`]) {
             cell = space[`${x}${y}${z}`]
-            if (cell === "given" || cell === "pen") {
+            if (cell === "given" || cell === "pen" || cell === "invalid") {
               value = z;
               break
             } else if (cell === "pencil") value.push(z);
@@ -65,10 +65,12 @@ class Board extends Component {
             col={y}
             value={value}
             face={this.props.face}
-            given={cell === "given"}
+            mode={cell}
             showColors={this.props.showColors}
             selectedValue={this.props.selectedValue}
             onClick={this.props.onClickCell}
+            onHover={this.props.onHover}
+            hover={this.props.hover}
           />
         );
       }
@@ -90,7 +92,7 @@ class Board extends Component {
         for (var y = 1; y <= 9; y++) {
           if (space[`${x}${y}${z}`]) {
             cell = space[`${x}${y}${z}`]
-            if (cell === "given" || cell === "pen") {
+            if (cell === "given" || cell === "pen" || cell === "invalid") {
               value = y;
               break
             } else if (cell === "pencil") value.push(y);
@@ -105,10 +107,12 @@ class Board extends Component {
             col={z}
             value={value}
             face={this.props.face}
-            given={cell === "given"}
+            mode={cell}
             showColors={this.props.showColors}
             selectedValue={this.props.selectedValue}
             onClick={this.props.onClickCell}
+            onHover={this.props.onHover}
+            hover={this.props.hover}
             />
         );
       }
@@ -130,7 +134,7 @@ class Board extends Component {
         for (var x = 1; x <= 9; x++) {
           if (space[`${x}${y}${z}`]) {
             cell = space[`${x}${y}${z}`]
-            if (cell === "given" || cell === "pen") {
+            if (cell === "given" || cell === "pen" || cell === "invalid") {
               value = x;
               break
             } else if (cell === "pencil") value.push(x);
@@ -145,10 +149,12 @@ class Board extends Component {
             col={z}
             value={value}
             face={this.props.face}
-            given={cell === "given"}
+            mode={cell}
             showColors={this.props.showColors}
             selectedValue={this.props.selectedValue}
             onClick={this.props.onClickCell}
+            onHover={this.props.onHover}
+            hover={this.props.hover}
             />
         );
       }

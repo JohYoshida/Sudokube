@@ -135,7 +135,8 @@ class Sudokube {
             if (string[index] === "-") missing++;
             else {
               incorrect++;
-              console.log("Incorrect value at", x, y);
+              this.space[`${x}${y}${Number(string[index])}`] = "invalid";
+              console.log("Invalid value at", x, y, Number(string[index]));
             }
           }
         }

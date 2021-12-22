@@ -47,6 +47,14 @@
   color: white;
 }
 
+.invalid {
+  background-color: #E53935;
+}
+
+.hover {
+  border: 1px solid #64B5F6;
+}
+
 .Divider {
   background-color: #BBDEFB;
 }
