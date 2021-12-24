@@ -117,9 +117,9 @@ class App extends Component {
     if (difficulty === "easy") {
       grid = removeDigits(grid, 55)
     } else if (difficulty === "medium") {
-      grid = removeDigits(grid, 72)
+      grid = removeDigits(grid, 65)
     } else if (difficulty === "hard") {
-      grid = removeDigits(grid, 82)
+      grid = removeDigits(grid, 75)
     }
     // Initialize sudokube with grid
     let puzzle = printGrid(grid, "-");
