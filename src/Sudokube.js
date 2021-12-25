@@ -112,7 +112,6 @@ class Sudokube {
         }
       }
     }
-    console.log(face, printGrid(grid, "-"));
     return grid;
   } // end of spaceToGrid
 
@@ -288,7 +287,24 @@ class Sudokube {
     console.log("Error: Failed to alter space. Failed on:", alteration);
     return false;
   } // end of alterSpace
-}
+
+  stringify(face, spacer) {
+    if (face === "yz") {
+      let grid = this.spaceToGrid("yz");
+      return printGrid(grid, spacer);
+    } else if (face === "xz") {
+      let grid = this.spaceToGrid("xz");
+      return printGrid(grid, spacer);
+    } else {
+      let grid = this.spaceToGrid("xy");
+      return printGrid(grid, spacer);
+    }
+  }
+
+  print(face, spacer) {
+    console.log(this.stringify(face, spacer));
+  }
+} // end of Sudokube
 
 function emptyGrid() {
   const EMPTY_ROW = [null, null, null, null, null, null, null, null, null];
