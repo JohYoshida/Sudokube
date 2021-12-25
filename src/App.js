@@ -90,7 +90,7 @@ class App extends Component {
               <Controls
                 startGame={this.startGame.bind(this)}
                 restartGame={this.restartGame.bind(this)}
-                solveGrid={this.solveGrid.bind(this)}
+                solve={this.solve.bind(this)}
                 compare={this.compare.bind(this)}
               />
             </div>
@@ -138,7 +138,7 @@ class App extends Component {
     this.setState({});
   }
 
-  solveGrid() {
+  solve() {
     let sdk = this.state.sudokube;
     sdk.solve();
     this.renderSudokube(sdk.space, this.state.selectedValue);
