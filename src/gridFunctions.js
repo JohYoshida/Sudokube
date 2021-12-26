@@ -135,13 +135,11 @@ function fillGrid(grid) {
 }
 
 /**
- * Attempts to solve the given sudoku grid, and returns true if it's solvable
+ * Attempts to solve the given sudoku grid, and returns true if it's solveGrid
  * @param  {[type]} grid [description]
  * @return {Boolean}     [description]
  */
-function solvable(grid) {
-  let solutionsCount = 0;
-  // Find next empty cell
+function solveGrid(grid) {
   let row;
   let col;
   for (var i = 0; i < 81; i++) {
@@ -156,10 +154,11 @@ function solvable(grid) {
             given: false
           };
           if (checkGrid(grid)) {
-            solutionsCount++;
+            window.count++;
+            if (window.count > 1) return false;
             break;
           } else {
-            if (solvable(grid)) {
+            if (solveGrid(grid)) {
               return true;
             }
           }
@@ -168,115 +167,20 @@ function solvable(grid) {
       break;
     }
   }
-  if (solutionsCount === 1) {
-    return true;
-  } else {
-    if (solutionsCount > 1) console.log(solutionsCount, "possible solutions");
-    return false;
-  }
+  // Backtrace
+  grid[row][col] = null;
 }
 
 /**
- * Attempts to solve the given sudoku grid, and returns the grid.
+ * Get value at row/col in grid
  * @param  {[type]} grid [description]
- * @return {Grid}        [description]
- */
-function solveGrid(grid) {
-  let solutionsCount = 0;
-  // Find next empty cell
-  let row;
-  let col;
-  for (var i = 0; i < 81; i++) {
-    row = Math.floor(i / 9);
-    col = i % 9;
-    if (
-      typeof grid[row][col] === "object" &&
-      grid[row][col] !== null &&
-      typeof grid[row][col].value !== "number"
-    ) {
-      grid[row][col] = null;
-    }
-    if (grid[row][col] === null) {
-      for (var value = 1; value < 10; value++) {
-        if (checkValue(grid, row, col, value)) {
-          grid[row][col] = {
-            value,
-            given: false
-          };
-          if (checkGrid(grid)) {
-            solutionsCount++;
-            break;
-          } else {
-            if (solveGrid(grid)) {
-              return grid;
-            }
-          }
-        }
-      }
-      break;
-    }
-  }
-  if (solutionsCount === 1) {
-    return grid;
-  } else if (solutionsCount > 1) {
-    console.log(solutionsCount, "possible solutions");
-    return solutionsCount;
-  }
-  return false;
-}
-
-/**
- * Removes a digit from the grid if possible
- * @param  {[type]} grid [description]
+ * @param  {[type]} row  [description]
+ * @param  {[type]} col  [description]
  * @return {[type]}      [description]
  */
-function removeDigit(grid, attempts) {
-  if (attempts <= 0) {
-    // console.log("Couldn't remove digit: out of attempts");
-    return grid;
-  }
-  // Select a random filled cell
-  let row = Math.floor(Math.random() * 9);
-  let col = Math.floor(Math.random() * 9);
-  while (grid[row][col] == null) {
-    row = Math.floor(Math.random() * 9);
-    col = Math.floor(Math.random() * 9);
-  }
-  // Copy grid
-  const gridCopy = copyGrid(grid);
-  const digit = gridCopy[row][col].value;
-  // Remove cell and test for solvability
-  gridCopy[row][col] = null;
-  if (solvable(gridCopy)) {
-    grid[row][col] = null;
-    // console.log("Removed", digit, "from", row + 1, col + 1);
-    return grid;
-  } else {
-    attempts--;
-    removeDigit(grid, attempts);
-  }
-  return grid;
-}
-
-function removeDigits(grid, num) {
-  for (var i = 0; i < num; i++) {
-    grid = removeDigit(grid, 10);
-  }
-  return grid;
-}
-
 function getValue(grid, row, col) {
   if (grid[row][col] !== null) {
     if (typeof grid[row][col].value === "number") {
-      return grid[row][col].value;
-    }
-  }
-  return null;
-}
-
-function getPencilMarks(grid, row, col) {
-  if (grid[row][col] !== null) {
-    if (typeof grid[row][col].value === "object") {
       return grid[row][col].value;
     }
   }
@@ -303,20 +207,6 @@ function rowValues(grid, row) {
   ];
 }
 
-function rowPencilMarks(grid, row) {
-  return [
-    getPencilMarks(grid, row, 0),
-    getPencilMarks(grid, row, 1),
-    getPencilMarks(grid, row, 2),
-    getPencilMarks(grid, row, 3),
-    getPencilMarks(grid, row, 4),
-    getPencilMarks(grid, row, 5),
-    getPencilMarks(grid, row, 6),
-    getPencilMarks(grid, row, 7),
-    getPencilMarks(grid, row, 8)
-  ];
-}
-
 /**
  * Returns an array containing the contents of the column in the grid
  * @param  {[type]} grid [description]
@@ -334,20 +224,6 @@ function columnValues(grid, col) {
     getValue(grid, 6, col),
     getValue(grid, 7, col),
     getValue(grid, 8, col)
-  ];
-}
-
-function columnPencilMarks(grid, col) {
-  return [
-    getPencilMarks(grid, 0, col),
-    getPencilMarks(grid, 1, col),
-    getPencilMarks(grid, 2, col),
-    getPencilMarks(grid, 3, col),
-    getPencilMarks(grid, 4, col),
-    getPencilMarks(grid, 5, col),
-    getPencilMarks(grid, 6, col),
-    getPencilMarks(grid, 7, col),
-    getPencilMarks(grid, 8, col)
   ];
 }
 
@@ -524,4 +400,4 @@ function copyGrid(grid) {
   return copy;
 }
 
-export {checkGrid, emptyGrid, fillGrid, printGrid, removeDigits};
+export {checkGrid, emptyGrid, fillGrid, copyGrid, printGrid, solveGrid};

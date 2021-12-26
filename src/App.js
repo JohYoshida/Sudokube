@@ -8,8 +8,9 @@ import {
   checkGrid,
   emptyGrid,
   fillGrid,
+  copyGrid,
   printGrid,
-  removeDigits,
+  solveGrid,
 } from "./gridFunctions";
 import './App.css';
 import Sudokube from "./Sudokube";
@@ -114,21 +115,59 @@ class App extends Component {
     }
     // Remove digits
     let solution = printGrid(grid, "-");
+    // Initialize sudokube with grid
     if (difficulty === "easy") {
-      grid = removeDigits(grid, 55)
+      grid = this.removeDigits(grid, 5)
     } else if (difficulty === "medium") {
-      grid = removeDigits(grid, 65)
+      grid = this.removeDigits(grid, 10)
     } else if (difficulty === "hard") {
-      grid = removeDigits(grid, 75)
+      grid = this.removeDigits(grid, 25)
     }
     // Initialize sudokube with grid
-    let puzzle = printGrid(grid, "-");
+    let puzzle = printGrid(grid);
+    console.log(puzzle);
     let sdk = this.state.sudokube;
     sdk.init(puzzle, solution);
     this.renderSudokube(sdk.space, this.state.selectedValue);
     this.setState({
       sudokube: sdk
     });
+  }
+
+  /**
+   * Backgracing algorithm to remove digits one by one while retaining unique solution
+   * @param  {[type]} grid     [description]
+   * @param  {[type]} attempts [description]
+   * @return {[type]}          [description]
+   */
+  removeDigits(grid, attempts) {
+    let digits = 0;
+    window.attempts = attempts;
+    while (window.attempts > 0 && digits <= 64) {
+      // Select a random filled cell
+      let row = Math.floor(Math.random() * 9);
+      let col = Math.floor(Math.random() * 9);
+      while (grid[row][col] == null) {
+        row = Math.floor(Math.random() * 9);
+        col = Math.floor(Math.random() * 9);
+      }
+      // Copy grid and remove cell
+      const gridCopy = copyGrid(grid);
+      gridCopy[row][col] = null;
+      // Test for solvability
+      window.count = 0;
+      solveGrid(gridCopy);
+      if (window.count !== 1) {
+        window.attempts--;
+      } else {
+        grid[row][col] = null;
+        digits++;
+      }
+      // Initialize Sudokube
+      let puzzle = printGrid(grid);
+      console.log(81 - digits + ":" + puzzle);
+    }
+    return grid;
   }
 
   restartGame() {
