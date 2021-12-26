@@ -172,6 +172,42 @@ function solveGrid(grid) {
 }
 
 /**
+ * Backgracing algorithm to remove digits one by one while retaining unique solution
+ * @param  {[type]} grid     [description]
+ * @param  {[type]} attempts [description]
+ * @return {[type]}          [description]
+ */
+function removeDigits(grid, attempts) {
+  let digits = 0;
+  // while (attempts > 0 && digits <= 64) {
+  while (attempts > 0) {
+    // Select a random filled cell
+    let row = Math.floor(Math.random() * 9);
+    let col = Math.floor(Math.random() * 9);
+    while (grid[row][col] == null) {
+      row = Math.floor(Math.random() * 9);
+      col = Math.floor(Math.random() * 9);
+    }
+    // Copy grid and remove cell
+    const gridCopy = copyGrid(grid);
+    gridCopy[row][col] = null;
+    // Test for solvability
+    window.count = 0;
+    solveGrid(gridCopy);
+    if (window.count !== 1) {
+      attempts--;
+    } else {
+      grid[row][col] = null;
+      digits++;
+    }
+    // Initialize Sudokube
+    let puzzle = printGrid(grid);
+    console.log(81 - digits, attempts, ":" + puzzle);
+  }
+  return grid;
+}
+
+/**
  * Get value at row/col in grid
  * @param  {[type]} grid [description]
  * @param  {[type]} row  [description]
@@ -400,4 +436,4 @@ function copyGrid(grid) {
   return copy;
 }
 
-export {checkGrid, emptyGrid, fillGrid, copyGrid, printGrid, solveGrid};
+export {checkGrid, emptyGrid, fillGrid, printGrid, removeDigits};

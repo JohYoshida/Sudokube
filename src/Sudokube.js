@@ -124,8 +124,9 @@ class Sudokube {
     let missing = 0;
     let incorrect = 0;
     if (string === this.solution) {
-      console.log("Perfect!");
-      return true;
+      // console.log("Perfect!");
+      // return true;
+      return "Perfect!";
     } else {
       for (var x = 1; x <= 9; x++) {
         for (var y = 1; y <= 9; y++) {
@@ -140,8 +141,9 @@ class Sudokube {
           }
         }
       }
-      console.log(missing, "missing and", incorrect, "incorrect values.");
-      return false;
+      // console.log(missing, "missing and", incorrect, "incorrect values.");
+      // return false;
+      return missing + " missing and " + incorrect + " incorrect values.";
     }
   }
 

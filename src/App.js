@@ -8,9 +8,8 @@ import {
   checkGrid,
   emptyGrid,
   fillGrid,
-  copyGrid,
   printGrid,
-  solveGrid,
+  removeDigits
 } from "./gridFunctions";
 import './App.css';
 import Sudokube from "./Sudokube";
@@ -28,6 +27,7 @@ class App extends Component {
       hover: null,
       mode: "pen",
       showColors: true,
+      message: null
     };
   }
 
@@ -94,6 +94,7 @@ class App extends Component {
                 solve={this.solve.bind(this)}
                 compare={this.compare.bind(this)}
               />
+            <div>{this.state.message}</div>
             </div>
             <canvas width="1600" height="1600" id="ThreeD"></canvas>
           </div>
@@ -117,11 +118,11 @@ class App extends Component {
     let solution = printGrid(grid, "-");
     // Initialize sudokube with grid
     if (difficulty === "easy") {
-      grid = this.removeDigits(grid, 5)
+      grid = removeDigits(grid, 5)
     } else if (difficulty === "medium") {
-      grid = this.removeDigits(grid, 10)
+      grid = removeDigits(grid, 10)
     } else if (difficulty === "hard") {
-      grid = this.removeDigits(grid, 25)
+      grid = removeDigits(grid, 75)
     }
     // Initialize sudokube with grid
     let puzzle = printGrid(grid);
@@ -130,51 +131,18 @@ class App extends Component {
     sdk.init(puzzle, solution);
     this.renderSudokube(sdk.space, this.state.selectedValue);
     this.setState({
-      sudokube: sdk
+      sudokube: sdk,
+      message: null
     });
-  }
-
-  /**
-   * Backgracing algorithm to remove digits one by one while retaining unique solution
-   * @param  {[type]} grid     [description]
-   * @param  {[type]} attempts [description]
-   * @return {[type]}          [description]
-   */
-  removeDigits(grid, attempts) {
-    let digits = 0;
-    window.attempts = attempts;
-    while (window.attempts > 0 && digits <= 64) {
-      // Select a random filled cell
-      let row = Math.floor(Math.random() * 9);
-      let col = Math.floor(Math.random() * 9);
-      while (grid[row][col] == null) {
-        row = Math.floor(Math.random() * 9);
-        col = Math.floor(Math.random() * 9);
-      }
-      // Copy grid and remove cell
-      const gridCopy = copyGrid(grid);
-      gridCopy[row][col] = null;
-      // Test for solvability
-      window.count = 0;
-      solveGrid(gridCopy);
-      if (window.count !== 1) {
-        window.attempts--;
-      } else {
-        grid[row][col] = null;
-        digits++;
-      }
-      // Initialize Sudokube
-      let puzzle = printGrid(grid);
-      console.log(81 - digits + ":" + puzzle);
-    }
-    return grid;
   }
 
   restartGame() {
     let sdk = this.state.sudokube;
     sdk.reset();
     this.renderSudokube(sdk.space, this.state.selectedValue);
-    this.setState({});
+    this.setState({
+      message: null
+    });
   }
 
   solve() {
@@ -182,14 +150,17 @@ class App extends Component {
     sdk.solve();
     this.renderSudokube(sdk.space, this.state.selectedValue);
     this.setState({
-      sudokube: sdk
+      sudokube: sdk,
+      message: null
     });
   }
 
   compare() {
     let sdk = this.state.sudokube;
-    sdk.compare();
-    this.setState({});
+    let message = sdk.compare();
+    this.setState({
+      message
+    });
   }
 
   onClickCell(cell) {
