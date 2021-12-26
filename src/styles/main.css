@@ -113,8 +113,6 @@ body .App {
   display: flex;
   flex-direction: row;
   text-align: center;
-}
-body .App h2 {
   color: white;
 }
 
