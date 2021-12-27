@@ -25,8 +25,6 @@ class NumSelector extends Component {
     // Add mode selector
     controls.push(
       <ModeSelector
-        key="mode"
-        value="e"
         onClick={this.props.changeMode}
         selectedValue={this.props.mode}
       />
@@ -34,8 +32,6 @@ class NumSelector extends Component {
     // Add show color toggle
     controls.push(
       <ColorToggler
-        key="color"
-        value="c"
         showColors={this.props.showColors}
         onClick={this.props.toggleColors}
       />
@@ -43,16 +39,12 @@ class NumSelector extends Component {
     // Add undo button
     controls.push(
       <UndoButton
-        key="undo"
-        value="u"
         onClick={this.props.undo}
       />
     );
     // Add redo button
     controls.push(
       <RedoButton
-        key="redo"
-        value="r"
         onClick={this.props.redo}
       />
     );

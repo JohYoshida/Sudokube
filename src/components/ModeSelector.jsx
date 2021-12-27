@@ -1,18 +1,20 @@
 import React, {
   Component
 } from "react";
+import {
+  IoPencil
+} from "react-icons/io5";
 
 class ModeSelector extends Component {
   render() {
     const {
-      value,
       selectedValue,
     } = this.props;
     let className = "Cell";
     if (selectedValue === "pencil") className = "Cell selected"
     return (
       <div className={className} onClick={this.props.onClick.bind(this)}>
-        {value}
+        <IoPencil size={25}/>
       </div>
     );
 

@@ -1,17 +1,16 @@
 import React, {
   Component
 } from "react";
+import {
+  IoArrowUndoOutline
+} from "react-icons/io5";
 
 class UndoButton extends Component {
   render() {
-    const {
-      value,
-    } = this.props;
     let className = "Cell";
-    // if (showColors) className = "Cell selected"
     return (
       <div className={className} onClick={this.props.onClick.bind(this)}>
-        {value}
+        <IoArrowUndoOutline size={25}/>
       </div>
     );
 
