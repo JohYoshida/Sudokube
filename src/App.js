@@ -80,19 +80,19 @@ class App extends Component {
               </div>
               <NumSelector
                 selectedValue={this.state.selectedValue}
-                mode={this.state.mode}
                 onClickCell={this.onClickCell.bind(this)}
-                changeMode={this.changeMode.bind(this)}
-                showColors={this.state.showColors}
-                toggleColors={this.toggleColors.bind(this)}
-                undo={this.undo.bind(this)}
-                redo={this.redo.bind(this)}
               />
               <Controls
                 startGame={this.startGame.bind(this)}
                 restartGame={this.restartGame.bind(this)}
                 solve={this.solve.bind(this)}
                 compare={this.compare.bind(this)}
+                mode={this.state.mode}
+                changeMode={this.changeMode.bind(this)}
+                showColors={this.state.showColors}
+                toggleColors={this.toggleColors.bind(this)}
+                undo={this.undo.bind(this)}
+                redo={this.redo.bind(this)}
               />
             <div>{this.state.message}</div>
             </div>
