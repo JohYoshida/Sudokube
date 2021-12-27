@@ -135,7 +135,7 @@ function fillGrid(grid) {
 }
 
 /**
- * Attempts to solve the given sudoku grid, and returns true if it's solveGrid
+ * Attempts to solve the given sudoku grid, and returns true if it's solvable
  * @param  {[type]} grid [description]
  * @return {Boolean}     [description]
  */
