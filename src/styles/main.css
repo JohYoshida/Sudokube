@@ -9,129 +9,106 @@
   border: 1px solid #BBDEFB;
   background-color: #212121;
   color: white;
-  justify-content: center;
-}
-.Cell .row {
-  font-size: 8px;
-  height: 10px;
-  width: 30px;
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
-}
-.Cell .row .subcell {
-  height: 10px;
-  width: 10px;
-  justify-content: center;
-}
+  justify-content: center; }
+  .Cell .row {
+    font-size: 8px;
+    height: 10px;
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    flex-direction: row; }
+    .Cell .row .subcell {
+      height: 10px;
+      width: 10px;
+      justify-content: center; }
 
 .A {
-  background-color: #81C784;
-}
+  background-color: #81C784; }
 
 .B {
-  background-color: #7CB342;
-}
+  background-color: #7CB342; }
 
 .C {
-  background-color: #1B5E20;
-}
+  background-color: #1B5E20; }
 
 .selected {
   background-color: #64B5F6;
-  color: #4a4848;
-}
+  color: #4a4848; }
 
 .given {
   background-color: #546E7A;
-  color: white;
-}
+  color: white; }
 
 .invalid {
-  background-color: #E53935;
-}
+  background-color: #E53935; }
 
 .hover {
-  border: 1px solid #4FC3F7;
-}
+  border: 1px solid #4FC3F7; }
 
 .Divider {
-  background-color: #BBDEFB;
-}
+  background-color: #BBDEFB; }
 
 .vertical {
   height: 30px;
   width: 1px;
   margin-top: 6px;
   margin-bottom: 6px;
-  background-color: #BBDEFB;
-}
+  background-color: #BBDEFB; }
 
 .vertical_em {
   height: 43px;
-  width: 1px;
-}
+  width: 1px; }
 
 .horizontal {
   height: 1px;
   width: 30px;
   margin-left: 7px;
   margin-right: 6px;
-  background-color: #BBDEFB;
-}
+  background-color: #BBDEFB; }
 
 .horizontal_em {
   height: 1px;
-  width: 43px;
-}
+  width: 43px; }
 
 .NumSelector {
   display: flex;
   margin-bottom: 5px;
   justify-content: center;
-  flex-direction: row;
-}
+  flex-direction: row; }
 
 .Board {
   display: flex;
-  margin: 5px;
+  margin: 10px;
   justify-content: center;
-  flex-direction: column;
-}
+  flex-direction: column; }
 
 .Square {
   display: flex;
   flex-direction: column;
   border: 2px solid;
-  border-color: #546E7A;
-}
+  border-color: #BBDEFB; }
 
 body {
-  background-color: #212121;
-}
-body .App {
-  display: flex;
-  flex-direction: row;
-  text-align: center;
-  color: white;
-}
+  background-color: #212121; }
+  body .App {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    color: white; }
 
 .row {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-}
+  justify-content: center; }
 
 .column {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
+  justify-content: center; }
 
 #ThreeD {
   align-self: center;
   width: 800px;
-  height: 800px;
-}
+  height: 800px; }
 
 /*# sourceMappingURL=main.css.map */
