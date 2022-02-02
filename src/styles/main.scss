@@ -3,9 +3,12 @@
 @import "Colors";
 @import "NumSelector";
 @import "Board";
+@import "Description";
 
 body {
   background-color: $background;
+  font-family: sans-serif;
+  
   .App {
     display: flex;
     flex-direction: row;
