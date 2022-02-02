@@ -104,8 +104,8 @@ class App extends Component {
   }
 
   /**
-   * [startGame description]
-   * @return {[type]} [description]
+   * Generate and initialize sudokube
+   * @param  {string} difficulty  Recognizes "easy", "medium", "hard"
    */
   startGame(difficulty) {
     // Generate solvable grid
@@ -136,6 +136,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * Reset Sudokube to start state of puzzle
+   */
   restartGame() {
     let sdk = this.state.sudokube;
     sdk.reset();
@@ -145,6 +148,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * Solve the current Sudokube, overwriting any pencil marks or incorrect digits
+   */
   solve() {
     let sdk = this.state.sudokube;
     sdk.solve();
@@ -155,6 +161,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * Compare current Sudokube state to the solution, and set this.state.message
+   */
   compare() {
     let sdk = this.state.sudokube;
     let message = sdk.compare();
@@ -163,6 +172,10 @@ class App extends Component {
     });
   }
 
+  /**
+   * Handle clicks for cells in grid or NumSelector
+   * @param  {Object} cell  Contains integers row, col, value; and string face
+   */
   onClickCell(cell) {
     const {
       row,
@@ -205,6 +218,10 @@ class App extends Component {
     }
   }
 
+  /**
+   * Set hover flag on cell under mouse
+   * @param  {Object} cell  Contains integers row, col, value; and string face
+   */
   onHover(cell) {
     const {
       row,
@@ -232,6 +249,9 @@ class App extends Component {
     })
   }
 
+  /**
+   * Change from pen to pencil mode and vice versa
+   */
   changeMode() {
     let mode = this.state.mode;
     if (mode === "pen") {
@@ -244,6 +264,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * Toggle coloring for number sets [1,2,3], [4,5,6], [7,8,9]
+   */
   toggleColors() {
     let show = this.state.showColors;
     this.setState({
@@ -251,6 +274,14 @@ class App extends Component {
     });
   }
 
+  /**
+   * Update Sudokube based on the row, column, and value with respect to the
+   * given cube face
+   * @param  {Number} row    Integer between 1 and 9
+   * @param  {Number} col    Integer between 1 and 9
+   * @param  {Number} value  Integer between 1 and 9
+   * @param  {[type]} face   Recognizes "xy", "yz", and "xz"
+   */
   updateSudokube(row, col, value, face) {
     let x, y, z;
     if (face === "xy") {
@@ -302,6 +333,9 @@ class App extends Component {
     this.renderSudokube(this.state.sudokube.space);
   }
 
+  /**
+   * Undo previous action
+   */
   undo() {
     let sdk = this.state.sudokube;
     sdk.undo();
@@ -310,6 +344,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * Redo previous action
+   */
   redo() {
     let sdk = this.state.sudokube;
     sdk.redo();
@@ -318,6 +355,14 @@ class App extends Component {
     });
   }
 
+  /**
+   * Render isometric 3D Sudokube using Isomer.js
+   * @param  {Object} space           Contains key-value pairs in the form
+   *                                  "xyz": "value", where x,y,z are integers
+   *                                  between 1 and 9, and value is one of
+   *                                  ["pen", "pencil", "given"]
+   * @param  {Number} selectedValue  Integer between 1 and 9
+   */
   renderSudokube(space, selectedValue) {
     if (!space) space = this.state.sudokube.space;
     const iso = new Isomer(document.getElementById("ThreeD"));
