@@ -16,6 +16,7 @@ import Sudokube from "./Sudokube";
 import Board from "./components/Board";
 import Controls from "./components/Controls";
 import NumSelector from "./components/NumSelector"
+import Description from "./components/Description"
 const Isomer = require("isomer");
 
 class App extends Component {
@@ -40,7 +41,7 @@ class App extends Component {
         <div className="column">
           <div className="row">
             <div className="column">
-              <div className="row">
+              <div className="row boards">
                 <div className="column">
                   <h2>xy</h2>
                   <Board
@@ -95,6 +96,7 @@ class App extends Component {
                 redo={this.redo.bind(this)}
               />
             <div>{this.state.message}</div>
+            <Description />
             </div>
             <canvas width="1600" height="1600" id="ThreeD"></canvas>
           </div>
