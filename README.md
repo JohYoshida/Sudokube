@@ -1,5 +1,8 @@
 ## Welcome to Sudokube, the (world's first?) truly 3D sudoku puzzle.
 
+Visit https://sudokube.herokuapp.com/ to play now. This project is hosted using free dynos, so please allow the server a moment to warm up :)
+
+## About Sudokube
 A Sudokube is composed of six interrelated sudoku grids, each
 representing a face of a 9x9x9 cube. Every digit in a grid is mapped to a location in 3D space.
 
@@ -9,11 +12,7 @@ Can you discover the restriction? Hint: observe what happens if you place a 1 at
 
 These puzzles are computer generated, so - while every puzzle is guaranteed to have a unique solution - some puzzles may require extensive bifurcation to solve, making them unfeasible for for a human to solve. If you're stuck, try inserting a possible value and then pressing Check Against Solution to see if that value is correct, or just start a new game.
 
-## Online Web App
-
-Visit https://sudokube.herokuapp.com/ to play now. This project is hosted using free dynos, so please allow the server a moment to warm up :)
-
-## Local Web App
+## Install locally
 You can clone this repo and run it on your own machine. Make sure you have `npm` installed, then navigate to the project directory and run:
 
 ### `npm install`
